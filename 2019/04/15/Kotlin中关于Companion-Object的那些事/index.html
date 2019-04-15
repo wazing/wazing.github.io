@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原标题：A few facts about Companion objects原文作者：David Blanc原文地址：https://blog.kotlin-academy.com/a-few-facts-about-companion-objects-37e18429b725 Kotlin给Java开发者带来最大改变之一就是废弃了static修饰符。与Java不同的是在Kotlin的类中不允">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin中关于Companion Object的那些事">
+<meta property="og:url" content="https://wazing.github.io/2019/04/15/Kotlin中关于Companion-Object的那些事/index.html">
+<meta property="og:site_name" content="Wazing blog">
+<meta property="og:description" content="原标题：A few facts about Companion objects原文作者：David Blanc原文地址：https://blog.kotlin-academy.com/a-few-facts-about-companion-objects-37e18429b725 Kotlin给Java开发者带来最大改变之一就是废弃了static修饰符。与Java不同的是在Kotlin的类中不允">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/Kotlin%E4%B8%AD%E5%85%B3%E4%BA%8ECompanion%20Object%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/0.jpg">
+<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/Kotlin%E4%B8%AD%E5%85%B3%E4%BA%8ECompanion%20Object%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/1.png">
+<meta property="og:updated_time" content="2019-04-15T15:57:46.533Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin中关于Companion Object的那些事">
+<meta name="twitter:description" content="原标题：A few facts about Companion objects原文作者：David Blanc原文地址：https://blog.kotlin-academy.com/a-few-facts-about-companion-objects-37e18429b725 Kotlin给Java开发者带来最大改变之一就是废弃了static修饰符。与Java不同的是在Kotlin的类中不允">
+<meta name="twitter:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/Kotlin%E4%B8%AD%E5%85%B3%E4%BA%8ECompanion%20Object%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wazing.github.io/2019/04/15/Kotlin中关于Companion-Object的那些事/">
+
+
+
+
+
+  <title>Kotlin中关于Companion Object的那些事 | Wazing blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wazing blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/04/15/Kotlin中关于Companion-Object的那些事/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wazing">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wazing blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kotlin中关于Companion Object的那些事</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-15T21:44:45+08:00">
+                2019-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/译文/" itemprop="url" rel="index">
+                    <span itemprop="name">译文</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/04/15/Kotlin中关于Companion-Object的那些事/" class="leancloud_visitors" data-flag-title="Kotlin中关于Companion Object的那些事">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/Kotlin%E4%B8%AD%E5%85%B3%E4%BA%8ECompanion%20Object%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/0.jpg" alt="Kotlin Companion Object"></p>
+<p>原标题：A few facts about Companion objects<br>原文作者：<a href="https://blog.kotlin-academy.com/@david.e.blanc" target="_blank" rel="noopener">David Blanc</a><br>原文地址：<a href="https://blog.kotlin-academy.com/a-few-facts-about-companion-objects-37e18429b725" target="_blank" rel="noopener">https://blog.kotlin-academy.com/a-few-facts-about-companion-objects-37e18429b725</a></p>
+<p>Kotlin给Java开发者带来最大改变之一就是废弃了<code>static</code>修饰符。与Java不同的是在Kotlin的类中不允许你声明静态成员或方法。相反，你必须向类中添加Companion对象来包装这些静态引用: 差异看起来似乎很小，但是它有一些明显的不同。</p>
+<a id="more"></a>
+<p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/Kotlin%E4%B8%AD%E5%85%B3%E4%BA%8ECompanion%20Object%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/1.png" alt="1"><br>首先， <code>companion</code>伴生对象是实际对象的单例实例。你实际上可以在你的类中声明一个单例并以与<code>companion</code>伴生对象相同的方式操作它。<br><strong>这意味着在实践中，您不仅限于一个静态对象来收集所有静态属性！</strong> <code>companion</code>关键字只是一个快捷方式，允许您通过类名访问该对象的内容（如果您在该特定类中并且只使用方法或属性名称，则完全删除类名）。就编译而言，下面的<code>testCompanion()</code>方法中的三行都是有效的语句。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TopLevelClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">doSomeStuff</span><span class="params">()</span></span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">object</span> FakeCompanion &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">doOtherStuff</span><span class="params">()</span></span> &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">testCompanion</span><span class="params">()</span></span> &#123;</span><br><span class="line">    TopLevelClass.doSomeStuff()</span><br><span class="line">    TopLevelClass.Companion.doSomeStuff()</span><br><span class="line">    TopLevelClass.FakeCompanion.doOtherStuff()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>公平地说，<code>companion关键字</code>还提供了更多选项，尤其是与Java互操作性相关的选项。如果您尝试在Java类中编写相同的测试代码，结果会略有不同：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> void testCompanion() &#123;</span><br><span class="line">    TopLevelClass.Companion.doSomeStuff();</span><br><span class="line">    TopLevelClass.FakeCompanion.INSTANCE.doOtherStuff();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>区别在于：<code>Companion</code>作为Java代码中的静态成员公开（它是一个对象实例，尽管有误导性的大写<code>C</code>），而<code>FakeCompanion</code>引用了我们第二个单例对象的类名。 在第二种情况下，我们需要使用其<code>INSTANCE</code>属性来实际访问Java中的实例（您可以使用<code>IntelliJ或Android Studio</code>中的<code>“显示Kotlin字节码”</code>菜单轻松检查，并点击<code>“反编译”</code>按钮来比较相应的 Java代码）。</p>
+<p>在这两种情况下（来自Kotlin或Java），使用<code>Companion伴生对象</code>允许比使用伪造对象更短的语法。 此外，由于一些注释，您可以让编译器生成一些快捷方式，以便于在Java代码中使用您的Kotlin配套内容。</p>
+<p>例如，<strong>@JvmField</strong>告诉编译器不要生成getter和setter，而是使用Java字段。 在伴生对象上下文中，副作用是您标记的字段不在该伴随对象内，而是封闭Java类的静态字段。 从Kotlin的角度来看，这没有任何区别，但是如果你看一下生成的字节代码，你会注意到伴生对象及其成员都声明与封闭类的静态成员处于同一级别。</p>
+<p>另一个有用的注解 <strong>@JvmStatic</strong>，这个注解允许你调用伴生对象中声明的方法就像是调用外层的类的静态方法一样。但是需要注意的是：在这种情况下，方法不会和上面的成员一样移出伴生对象的内部作用域。因为编译器只是向外层类中添加一个<strong>额外的静态方法</strong>，然后在该方法内部又委托给伴生对象。</p>
+<p>看一下这个简单的Kotlin类：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="meta">@JvmStatic</span></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">aStaticFunction</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是相应的Java代码（简化的摘录，完整的反编译代码更详细）：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> MyClass.Companion Companion = new MyClass.Companion();</span><br><span class="line">  	<span class="comment">// 外层类中添加一个额外的静态方法</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">aStaticFunction</span><span class="params">()</span></span> &#123;</span><br><span class="line">      	<span class="comment">// 方法内部又委托给伴生对象的aStaticFunction方法</span></span><br><span class="line">        Companion.aStaticFunction();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Companion</span> </span>&#123;</span><br><span class="line">         <span class="keyword">public</span> <span class="keyword">final</span> void aStaticFunction() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是一个非常微小的细微差别，但在某些特殊情况下可能会出现问题。 例如，想想Dagger模块。 定义Dagger模块时，<a href="https://medium.com/square-corner-blog/keeping-the-daggers-sharp-%EF%B8%8F-230b3191c3f#792c" target="_blank" rel="noopener">可以使用静态方法来提高性能</a>，但如果选择这样做，如果模块包含静态方法以外的任何内容，则编译将失败。 由于Kotlin在您的类中包含静态方法，但也保留了静态伴随对象，因此您将无法以这种方式编写仅包含静态方法的Kotlin类。</p>
+<p>我们有点偏离这篇文章的主题了，所以让我们继续回到伴生对象上来。现在你已经了解了伴生对象实质就是对象，也应该意识到它开放了更多的可能性，例如继承和多态。<br>这意味着你的伴生对象并不是没有类型或父类的匿名对象。<strong>它不仅可以拥有父类，而且它甚至可以实现接口以及含有对象名。它不需要被称为companion</strong>。这就是为什么你可以这样写一个Parcelable类：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ParcelableClass</span></span>() : Parcelable &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span>(parcel: Parcel) : <span class="keyword">this</span>()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">writeToParcel</span><span class="params">(parcel: <span class="type">Parcel</span>, flags: <span class="type">Int</span>)</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">describeContents</span><span class="params">()</span></span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> CREATOR : Parcelable.Creator&lt;ParcelableClass&gt; &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">createFromParcel</span><span class="params">(parcel: <span class="type">Parcel</span>)</span></span>: ParcelableClass = ParcelableClass(parcel)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">newArray</span><span class="params">(size: <span class="type">Int</span>)</span></span>: Array&lt;ParcelableClass?&gt; = arrayOfNulls(size)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里, 伴生对象名为CREATOR，它实现了Android中的Parcelable.Creator接口，允许遵守Parcelable约定，同时保持比使用@JvmField注释在伴随对象内添加Creator对象更直观。Kotlin中引入了@Parcelize注解，以便于可以获得所有样板代码，但是在这不是重点…<br>为了使它变得更简洁，如果你的伴生对象可以实现接口，它甚至可以使用Kotlin中的代理来执行此操作：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyObject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> : Runnable <span class="keyword">by</span> MyRunnable()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这将允许您同时向多个对象中添加静态方法！请注意，伴生对象在这种情况下甚至不需要作用域体，因为它是由代理提供的。</p>
+<p>最后但同样重要的是，你可以为伴生对象定义扩展函数! 这就意味着你可以在现有的类中添加静态方法或静态属性，如下例所示:<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyObject</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">useCompanionExtension</span><span class="params">()</span></span> &#123;</span><br><span class="line">        someExtension()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 定义扩展函数</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> MyObject.Companion.<span class="title">someExtension</span><span class="params">()</span></span> &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样做有什么意义？我真的不知道。虽然Marcin Moskala建议使用此操作将静态工厂方法以Companion的扩展函数的形式添加到类中。<br>总而言之，伴生对象不仅仅是为了给缺少<code>static</code>修饰符的使用场景提供解决方案:</p>
+<ul>
+<li>它们是真正的Kotlin对象，包括名称和类型，以及一些额外的功能。</li>
+<li>他们甚至可以不用于仅仅为了提供静态成员或方法场景。可以有更多其他选择，比如他们可以用作单例对象或替代顶层函数的功能。</li>
+</ul>
+<p>与大多数场景一样，Kotlin意味着在你设计过程需要有一点点转变，但与Java相比，它并没有真正限制你的选择。如果有的话，也会通过提供一些新的、更简洁的方式让你去使用它。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/08/Java编程思想-单例模式/" rel="next" title="Java编程思想-单例模式">
+                <i class="fa fa-chevron-left"></i> Java编程思想-单例模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg" alt="Wazing">
+            
+              <p class="site-author-name" itemprop="name">Wazing</p>
+              <p class="site-description motion-element" itemprop="description">Merry Christmas.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wazing" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jokey1509@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wazing</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("ahPzt2W1jDEs3gCvk3W6ieSR-gzGzoHsz", "GOdDJYwRiWppcwUIffjsSYgN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

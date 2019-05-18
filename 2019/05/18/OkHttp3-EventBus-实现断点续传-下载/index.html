@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="断点续传/下载，在网络情况不好的时候，可以在断开连接以后，仅继续获取部分内容。假如手机在下载文件的时候下载了80%，某些原因断网了，如果不支持范围请求，那就只有被迫重头开始下载。但是如果有范围请求的加持，就只需要下载最后 5% 的资源，避免重新下载。 记录 App更新的几个主要功能模块，包含  Apk文件下载和断点续传 Apk安装，需要兼容 android 7.0 Android 8.0 未知权">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OkHttp3&#x2F;EventBus 实现断点续传&#x2F;下载">
+<meta property="og:url" content="https://wazing.github.io/2019/05/18/OkHttp3-EventBus-实现断点续传-下载/index.html">
+<meta property="og:site_name" content="Wazing blog">
+<meta property="og:description" content="断点续传/下载，在网络情况不好的时候，可以在断开连接以后，仅继续获取部分内容。假如手机在下载文件的时候下载了80%，某些原因断网了，如果不支持范围请求，那就只有被迫重头开始下载。但是如果有范围请求的加持，就只需要下载最后 5% 的资源，避免重新下载。 记录 App更新的几个主要功能模块，包含  Apk文件下载和断点续传 Apk安装，需要兼容 android 7.0 Android 8.0 未知权">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/OkHttp3%3AEventBus%20%E5%AE%9E%E7%8E%B0%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0%3A%E4%B8%8B%E8%BD%BD.jpg">
+<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/OkHttp%2BEventBus%20%E5%AE%9E%E7%8E%B0%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0%E5%92%8C%E8%BF%9B%E5%BA%A6%E5%9B%9E%E8%B0%83/http_response_headers.png">
+<meta property="og:updated_time" content="2019-05-18T06:51:49.553Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OkHttp3&#x2F;EventBus 实现断点续传&#x2F;下载">
+<meta name="twitter:description" content="断点续传/下载，在网络情况不好的时候，可以在断开连接以后，仅继续获取部分内容。假如手机在下载文件的时候下载了80%，某些原因断网了，如果不支持范围请求，那就只有被迫重头开始下载。但是如果有范围请求的加持，就只需要下载最后 5% 的资源，避免重新下载。 记录 App更新的几个主要功能模块，包含  Apk文件下载和断点续传 Apk安装，需要兼容 android 7.0 Android 8.0 未知权">
+<meta name="twitter:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/OkHttp3%3AEventBus%20%E5%AE%9E%E7%8E%B0%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0%3A%E4%B8%8B%E8%BD%BD.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wazing.github.io/2019/05/18/OkHttp3-EventBus-实现断点续传-下载/">
+
+
+
+
+
+  <title>OkHttp3/EventBus 实现断点续传/下载 | Wazing blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wazing blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/05/18/OkHttp3-EventBus-实现断点续传-下载/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wazing">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wazing blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OkHttp3/EventBus 实现断点续传/下载</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-18T10:09:26+08:00">
+                2019-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/05/18/OkHttp3-EventBus-实现断点续传-下载/" class="leancloud_visitors" data-flag-title="OkHttp3/EventBus 实现断点续传/下载">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/OkHttp3%3AEventBus%20%E5%AE%9E%E7%8E%B0%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0%3A%E4%B8%8B%E8%BD%BD.jpg" alt="cover.png"></p>
+<p>断点续传/下载，在网络情况不好的时候，可以在断开连接以后，仅继续获取部分内容。假如手机在下载文件的时候下载了80%，某些原因断网了，如果不支持范围请求，那就只有被迫重头开始下载。但是如果有范围请求的加持，就只需要下载最后 5% 的资源，避免重新下载。</p>
+<p>记录 App更新的几个主要功能模块，包含</p>
+<ul>
+<li>Apk文件下载和断点续传</li>
+<li>Apk安装，需要兼容 android 7.0</li>
+<li>Android 8.0 未知权限授权</li>
+<li>拓展</li>
+</ul>
+<a id="more"></a>
+<h1 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h1><h2 id="java-io-RandomAccessFile"><a href="#java-io-RandomAccessFile" class="headerlink" title="java.io.RandomAccessFile"></a>java.io.RandomAccessFile</h2><p>断点续传/下载需要使用到 <a href="https://docs.oracle.com/javase/7/docs/api/java/io/RandomAccessFile.html" target="_blank" rel="noopener">java.io.RandomAccessFile</a> 类，RandomAccessFile 的实例支持读取和写入随机访问文件，它也可以 <code>seek(long pos)</code> 设置从此文件的开头开始测量的文件指针偏移量，在该位置进行下一次读取或写入操作。简单点说就是可以通过<code>seek(long pos)</code>方法跳过<code>pos</code>字节开始写入字节。</p>
+<h2 id="HTTP-的范围请求"><a href="#HTTP-的范围请求" class="headerlink" title="HTTP 的范围请求"></a>HTTP 的范围请求</h2><h3 id="是否支持范围请求"><a href="#是否支持范围请求" class="headerlink" title="是否支持范围请求"></a>是否支持范围请求</h3><p>同时还需要，在HTTP/1.1中，可以声明了一个响应头部 <code>Access-Ranges</code> 来标记是否支持范围请求，它只有一个可选参数 bytes，<br><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/OkHttp%2BEventBus%20%E5%AE%9E%E7%8E%B0%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0%E5%92%8C%E8%BF%9B%E5%BA%A6%E5%9B%9E%E8%B0%83/http_response_headers.png" alt="HTTP/1.1.png"><br>例如这里给了一个下载APK的响应头，可以看到它是有 <code>Accept-Ranges:bytes</code>来标记的，有此 标记标识当前资源支持范围请求。</p>
+<h3 id="使用范围请求"><a href="#使用范围请求" class="headerlink" title="使用范围请求"></a>使用范围请求</h3><p>如果已经确定双端都支持范围请求，我们就可以在请求资源的时候使用它。</p>
+<p>所有的文件最终都是存储在磁盘或者内存中的字节，对于待操作的文件可以将其以字节为单位分割。这样只需要 HTTP 支持请求该文件从 n 到 n+x 这个范围内的资源，就可以实现范围请求了。</p>
+<p>HTTP/1.1 中定义了一个 <code>Ranges</code> 的请求头，来指定请求实体的范围。它的范围取值是在 <code>0-Content-Length</code> 之间，使用 <code>-</code> 分割。。</p>
+<p>例如已经下载了 1000 bytes 的资源内容，想接着继续下载之后的资源内容，只要在 HTTP 请求头部，增加 <code>Ranges:bytes=1000-</code> 就可以了。<br>Range 还有几种不同的方式来限定范围，可以根据需要灵活定制：</p>
+<ul>
+<li>500-1000：指定开始和结束的范围，一般用于多线程下载。</li>
+<li>500- ：指定开始区间，一直传递到结束。这个就比较适用于断点续传、或者在线播放等等。</li>
+<li>-500：无开始区间，只意思是需要最后 500 bytes 的内容实体。</li>
+<li>100-300,1000-3000：指定多个范围，这种方式使用的场景很少，了解一下就好了。</li>
+</ul>
+<p>来通过一个实例来验证一下</p>
+<h1 id="断点续传-下载"><a href="#断点续传-下载" class="headerlink" title="断点续传/下载"></a>断点续传/下载</h1><h2 id="请求指定范围数据"><a href="#请求指定范围数据" class="headerlink" title="请求指定范围数据"></a>请求指定范围数据</h2><p>几个地方为重点，网络请求添加了一个<code>.addHeader(&quot;Range&quot;, &quot;bytes=$currentFileLength-&quot;)</code>，currentFileLength为当前文件字节大小。比如当前需要下载的文件大小为1000个字节，<code>.addHeader(&quot;Range&quot;, &quot;bytes=500-&quot;)</code>表示只请求服务器500-1000的字节，后续回调中的<code>response.body().contentLength()</code>大小为 500</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> request = Request.Builder()</span><br><span class="line">                .addHeader(<span class="string">"Range"</span>, <span class="string">"bytes=<span class="variable">$currentFileLength</span>-"</span>)</span><br><span class="line">                .url(apkUrl)</span><br><span class="line">                .build()</span><br><span class="line"><span class="comment">// 创建RandomAccessFile实例，并设置跳过currentFileLength个字节</span></span><br><span class="line"><span class="keyword">val</span> randomAccessFile = RandomAccessFile(apkFile, <span class="string">"rw"</span>)</span><br><span class="line">randomAccessFile.seek(currentFileLength)</span><br><span class="line"><span class="comment">// apkFile为下载文件的绝对路径</span></span><br></pre></td></tr></table></figure>
+<h2 id="数据写入"><a href="#数据写入" class="headerlink" title="数据写入"></a>数据写入</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> inputStream: InputStream? = <span class="literal">null</span></span><br><span class="line"><span class="keyword">var</span> bufferedInputStream: BufferedInputStream? = <span class="literal">null</span></span><br><span class="line"><span class="keyword">var</span> randomAccessFile: RandomAccessFile? = <span class="literal">null</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    inputStream = responseBody.byteStream()</span><br><span class="line">    bufferedInputStream = BufferedInputStream(inputStream, size)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建RandomAccessFile实例，并设置跳过currentFileLength个字节</span></span><br><span class="line">    randomAccessFile = RandomAccessFile(apkFile, <span class="string">"rw"</span>)</span><br><span class="line">    randomAccessFile.seek(currentFileLength)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> len = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> (bufferedInputStream.read(buffer).apply &#123; len = <span class="keyword">this</span> &#125; != -<span class="number">1</span>) &#123;</span><br><span class="line">      randomAccessFile.write(buffer, <span class="number">0</span>, len)</span><br><span class="line">      currentFileLength += len.toLong()</span><br><span class="line">      <span class="comment">// 通过EventBus回调下载进度</span></span><br><span class="line">      callbackProgress(currentFileLength, totalLength)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 通过EventBus回调下载进度</span></span><br><span class="line">    callbackProgress(currentFileLength, totalLength)</span><br><span class="line">    Log.d(TAG, <span class="string">"下载完成: <span class="subst">$&#123;apkFile.absoluteFile&#125;</span>"</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span> (e: IOException) &#123;</span><br><span class="line">    e.printStackTrace()</span><br><span class="line">    Log.e(TAG, e.message, e)</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    bufferedInputStream?.close()</span><br><span class="line">    inputStream?.close()</span><br><span class="line">    randomAccessFile?.close()</span><br><span class="line">    responseBody.close()</span><br><span class="line">    call.cancel()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="回调数据"><a href="#回调数据" class="headerlink" title="回调数据"></a>回调数据</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过EventBus回调下载进度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">callbackProgress</span><span class="params">(currentLength: <span class="type">Long</span>, totalLength: <span class="type">Long</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> progress = (currentLength * <span class="number">1.0f</span> / totalLength * <span class="number">100</span>).toInt()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> hasSubscriberEvent = EventBus.getDefault().hasSubscriberForEvent(Progress::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br><span class="line">    <span class="keyword">if</span> (hasSubscriberEvent) &#123;</span><br><span class="line">      EventBus.getDefault().post(Progress(progress, currentLength, totalLength))</span><br><span class="line">    &#125;</span><br><span class="line">    Log.d(TAG, <span class="string">"---&gt;&gt;&gt; progress = <span class="variable">$progress</span>  <span class="variable">$currentLength</span> / <span class="variable">$totalLength</span>"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在需要显示进度的地方，通过EventBus注册和反注册</span></span><br><span class="line">EventBus.getDefault().register(<span class="keyword">this</span>)</span><br><span class="line">EventBus.getDefault().unregister(<span class="keyword">this</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接收回调</span></span><br><span class="line"><span class="meta">@Subscribe(threadMode = ThreadMode.MAIN)</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">onEventDownloadProgress</span><span class="params">(progress: <span class="type">Progress</span>)</span></span> &#123;</span><br><span class="line">    progress_bar.progress = progress.progress</span><br><span class="line">    progress_text.text = <span class="string">"<span class="subst">$&#123;progress.progress&#125;</span>%"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Progress实体类</span></span><br><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Progress</span></span>(<span class="keyword">val</span> progress: <span class="built_in">Int</span>, <span class="keyword">val</span> currentLength: <span class="built_in">Long</span>, <span class="keyword">val</span> totalLength: <span class="built_in">Long</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="权限配置"><a href="#权限配置" class="headerlink" title="权限配置"></a>权限配置</h2><p>首先一些必要权限需要添加在<code>AndroidManifest.xml</code>中，在Android 6.0之后一些危险权限需要动态申请，Android 8.0还有一个安装未知应用权限需要请求打开。Android 7.0后 <code>SDCard文件访问</code>需要在<code>AndroidManifest.xml</code>配置<code>&lt;provider&gt;......&lt;/provider&gt;</code>，需要在<code>res/</code>目录下新创建<code>xml</code>目录</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 分别是 网络、SDCard读、SDCard写、API</span></span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;</span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.REQUEST_INSTALL_PACKAGES"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;provider</span><br><span class="line">    android:name=<span class="string">"android.support.v4.content.FileProvider"</span></span><br><span class="line">    android:authorities=<span class="string">"<span class="subst">$&#123;applicationId&#125;</span>.fileProvider"</span></span><br><span class="line">    android:exported=<span class="string">"false"</span></span><br><span class="line">    android:grantUriPermissions=<span class="string">"true"</span>&gt;</span><br><span class="line">    &lt;meta-<span class="keyword">data</span></span><br><span class="line">        android:name=<span class="string">"android.support.FILE_PROVIDER_PATHS"</span></span><br><span class="line">        android:resource=<span class="string">"@xml/file_paths"</span> /&gt;</span><br><span class="line">&lt;/provider&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// file_paths.xml，添加到 res/xml/file_paths.xml</span></span><br><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;paths xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span><br><span class="line">    &lt;<span class="keyword">external</span>-path</span><br><span class="line">        name=<span class="string">"external-path"</span></span><br><span class="line">        path=<span class="string">"."</span> /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;<span class="keyword">external</span>-cache-path</span><br><span class="line">        name=<span class="string">"external_cache"</span></span><br><span class="line">        path=<span class="string">"."</span> /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;cache-path</span><br><span class="line">        name=<span class="string">"cache"</span></span><br><span class="line">        path=<span class="string">"."</span> /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;files-path</span><br><span class="line">        name=<span class="string">"files_path"</span></span><br><span class="line">        path=<span class="string">"."</span> /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;<span class="keyword">external</span>-files-path</span><br><span class="line">        name=<span class="string">"external_files_path"</span></span><br><span class="line">        path=<span class="string">"."</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/paths&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">InstallPermissionCallBack</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 已授权</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onGranted</span><span class="params">()</span></span></span><br><span class="line">    <span class="comment">// 未授权</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onDenied</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 检查权限</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">checkInstallPermission</span><span class="params">(context: <span class="type">Context</span>, callback: <span class="type">InstallPermissionCallBack</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (hasInstallPermission(context)) &#123;</span><br><span class="line">      callback.onGranted()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      openInstallPermissionSetting(context, callback)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 是否有安装未知来源应用的权限</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hasInstallPermission</span><span class="params">(context: <span class="type">Context</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) &#123;</span><br><span class="line">      <span class="keyword">return</span> context.packageManager.canRequestPackageInstalls()</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 检查 android 8.0 及以上是否有未知应用安装权限，无则打开未知应用安装权限授权界面</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">openInstallPermissionSetting</span><span class="params">(context: <span class="type">Context</span>, callback: <span class="type">InstallPermissionCallBack</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) &#123;</span><br><span class="line">      <span class="keyword">val</span> intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse(<span class="string">"package:"</span> + context.packageName))</span><br><span class="line">      <span class="comment">// 封装startActivityForResult和onActivityResult，用于请求后能接收到回调</span></span><br><span class="line">      ActivityLauncher.<span class="keyword">init</span>(context <span class="keyword">as</span> FragmentActivity).startActivityForResult(intent, <span class="keyword">object</span> : ActivityLauncher.Callback &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onActivityResult</span><span class="params">(resultCode: <span class="type">Int</span>, <span class="keyword">data</span>: <span class="type">Intent</span>?)</span></span> &#123;</span><br><span class="line">          <span class="keyword">if</span> (resultCode == Activity.RESULT_OK) &#123;</span><br><span class="line">            callback.onGranted()</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            callback.onDenied()</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      callback.onGranted()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 安装apk，兼容7.0</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">installApk</span><span class="params">(context: <span class="type">Context</span>, file: <span class="type">File</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> intent = Intent(Intent.ACTION_VIEW)</span><br><span class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N) &#123;</span><br><span class="line">      <span class="keyword">val</span> apkUri = FileProvider.getUriForFile(context, <span class="string">"<span class="subst">$&#123;context.packageName&#125;</span>.fileProvider"</span>, file)</span><br><span class="line">      intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)</span><br><span class="line">      intent.setDataAndType(apkUri, <span class="string">"application/vnd.android.package-archive"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      intent.setDataAndType(Uri.fromFile(file), <span class="string">"application/vnd.android.package-archive"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</span><br><span class="line">    context.startActivity(intent)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Activity中onActivityResult封装"><a href="#Activity中onActivityResult封装" class="headerlink" title="Activity中onActivityResult封装"></a>Activity中onActivityResult封装</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.support.v4.app.Fragment</span><br><span class="line"><span class="keyword">import</span> android.content.Intent</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle</span><br><span class="line"><span class="keyword">import</span> android.util.Log</span><br><span class="line"><span class="keyword">import</span> android.util.SparseArray</span><br><span class="line"><span class="keyword">import</span> java.util.*</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RouterFragment</span> : <span class="type">Fragment</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mCallbacks = SparseArray&lt;ActivityLauncher.Callback&gt;()</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mCodeGenerator = Random()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        retainInstance = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">startActivityForResult</span><span class="params">(intent: <span class="type">Intent</span>, callback: <span class="type">ActivityLauncher</span>.<span class="type">Callback</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> requestCode = makeRequestCode()</span><br><span class="line">        mCallbacks.put(requestCode, callback)</span><br><span class="line">        startActivityForResult(intent, requestCode)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">makeRequestCode</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> requestCode: <span class="built_in">Int</span></span><br><span class="line">        <span class="keyword">var</span> tryCount = <span class="number">0</span></span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            requestCode = mCodeGenerator.nextInt(<span class="number">0x0000FFFF</span>)</span><br><span class="line">            tryCount++</span><br><span class="line">        &#125; <span class="keyword">while</span> (mCallbacks.indexOfKey(requestCode) &gt;= <span class="number">0</span> &amp;&amp; tryCount &lt; <span class="number">10</span>)</span><br><span class="line">        <span class="keyword">return</span> requestCode</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onActivityResult</span><span class="params">(requestCode: <span class="type">Int</span>, resultCode: <span class="type">Int</span>, <span class="keyword">data</span>: <span class="type">Intent</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, <span class="keyword">data</span>)</span><br><span class="line">        Log.d(<span class="string">"zz"</span>, <span class="string">"requestCode = <span class="variable">$requestCode</span>  resultCode = <span class="variable">$resultCode</span>"</span>)</span><br><span class="line">        <span class="keyword">val</span> callback = mCallbacks.<span class="keyword">get</span>(requestCode)</span><br><span class="line">        Log.d(<span class="string">"zz"</span>, <span class="string">"callback = <span class="variable">$callback</span>"</span>)</span><br><span class="line">        mCallbacks.remove(requestCode)</span><br><span class="line">        callback?.onActivityResult(resultCode, <span class="keyword">data</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">newInstance</span><span class="params">()</span></span>: RouterFragment = RouterFragment()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.content.Context</span><br><span class="line"><span class="keyword">import</span> android.content.Intent</span><br><span class="line"><span class="keyword">import</span> android.support.v4.app.Fragment</span><br><span class="line"><span class="keyword">import</span> android.support.v4.app.FragmentActivity</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActivityLauncher</span> <span class="keyword">private</span> <span class="keyword">constructor</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> context: Context) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> KEY_FRAGMENT_TAG = <span class="string">"ActivityLauncher"</span></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">init</span><span class="params">(activity: <span class="type">FragmentActivity</span>)</span></span>: ActivityLauncher &#123;</span><br><span class="line">            <span class="keyword">return</span> ActivityLauncher(activity)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">getRouterFragment</span><span class="params">(activity: <span class="type">FragmentActivity</span>)</span></span>: Fragment &#123;</span><br><span class="line">        <span class="keyword">return</span> activity.supportFragmentManager.findFragmentByTag(KEY_FRAGMENT_TAG) ?: let &#123;</span><br><span class="line">            <span class="keyword">val</span> routerFragment = RouterFragment.newInstance()</span><br><span class="line">            <span class="keyword">val</span> fragmentManager = activity.supportFragmentManager</span><br><span class="line">            fragmentManager.beginTransaction()</span><br><span class="line">                    .add(routerFragment, KEY_FRAGMENT_TAG)</span><br><span class="line">                    .commitAllowingStateLoss()</span><br><span class="line">            fragmentManager.executePendingTransactions()</span><br><span class="line">            <span class="keyword">return</span> routerFragment</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">startActivityForResult</span><span class="params">(intent: <span class="type">Intent</span>, callback: <span class="type">Callback</span>)</span></span> &#123;</span><br><span class="line">        (getRouterFragment(context <span class="keyword">as</span> FragmentActivity) <span class="keyword">as</span> RouterFragment)</span><br><span class="line">                .startActivityForResult(intent, callback)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">onActivityResult</span><span class="params">(resultCode: <span class="type">Int</span>, <span class="keyword">data</span>: <span class="type">Intent</span>?)</span></span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="怎么使用"><a href="#怎么使用" class="headerlink" title="怎么使用?"></a>怎么使用?</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ActivityLauncher.<span class="keyword">init</span>(context <span class="keyword">as</span> FragmentActivity).startActivityForResult(intent, <span class="keyword">object</span> : ActivityLauncher.Callback &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onActivityResult</span><span class="params">(resultCode: <span class="type">Int</span>, <span class="keyword">data</span>: <span class="type">Intent</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (resultCode == Activity.RESULT_OK) &#123;</span><br><span class="line">          	</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          	</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用于EventBus回调下载进度</span></span><br><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Progress</span></span>(<span class="keyword">val</span> progress: <span class="built_in">Int</span>, <span class="keyword">val</span> currentLength: <span class="built_in">Long</span>, <span class="keyword">val</span> totalLength: <span class="built_in">Long</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Activity-onActivityResult-方法回调封装"><a href="#Activity-onActivityResult-方法回调封装" class="headerlink" title="Activity onActivityResult()方法回调封装"></a>Activity onActivityResult()方法回调封装</h2><h3 id="ActivityLauncher"><a href="#ActivityLauncher" class="headerlink" title="ActivityLauncher"></a>ActivityLauncher</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.content.Context</span><br><span class="line"><span class="keyword">import</span> android.content.Intent</span><br><span class="line"><span class="keyword">import</span> android.support.v4.app.Fragment</span><br><span class="line"><span class="keyword">import</span> android.support.v4.app.FragmentActivity</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActivityLauncher</span> <span class="keyword">private</span> <span class="keyword">constructor</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> context: Context) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> KEY_FRAGMENT_TAG = <span class="string">"ActivityLauncher"</span></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">init</span><span class="params">(activity: <span class="type">FragmentActivity</span>)</span></span>: ActivityLauncher &#123;</span><br><span class="line">            <span class="keyword">return</span> ActivityLauncher(activity)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">getRouterFragment</span><span class="params">(activity: <span class="type">FragmentActivity</span>)</span></span>: Fragment &#123;</span><br><span class="line">        <span class="keyword">return</span> activity.supportFragmentManager.findFragmentByTag(KEY_FRAGMENT_TAG) ?: let &#123;</span><br><span class="line">            <span class="keyword">val</span> routerFragment = RouterFragment.newInstance()</span><br><span class="line">            <span class="keyword">val</span> fragmentManager = activity.supportFragmentManager</span><br><span class="line">            fragmentManager.beginTransaction()</span><br><span class="line">                    .add(routerFragment, KEY_FRAGMENT_TAG)</span><br><span class="line">                    .commitAllowingStateLoss()</span><br><span class="line">            fragmentManager.executePendingTransactions()</span><br><span class="line">            <span class="keyword">return</span> routerFragment</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">startActivityForResult</span><span class="params">(intent: <span class="type">Intent</span>, callback: <span class="type">Callback</span>)</span></span> &#123;</span><br><span class="line">        (getRouterFragment(context <span class="keyword">as</span> FragmentActivity) <span class="keyword">as</span> RouterFragment)</span><br><span class="line">                .startActivityForResult(intent, callback)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">onActivityResult</span><span class="params">(resultCode: <span class="type">Int</span>, <span class="keyword">data</span>: <span class="type">Intent</span>?)</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="RouterFragment"><a href="#RouterFragment" class="headerlink" title="RouterFragment"></a>RouterFragment</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.support.v4.app.Fragment</span><br><span class="line"><span class="keyword">import</span> android.content.Intent</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle</span><br><span class="line"><span class="keyword">import</span> android.util.Log</span><br><span class="line"><span class="keyword">import</span> android.util.SparseArray</span><br><span class="line"><span class="keyword">import</span> java.util.*</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RouterFragment</span> : <span class="type">Fragment</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mCallbacks = SparseArray&lt;ActivityLauncher.Callback&gt;()</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mCodeGenerator = Random()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        retainInstance = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">startActivityForResult</span><span class="params">(intent: <span class="type">Intent</span>, callback: <span class="type">ActivityLauncher</span>.<span class="type">Callback</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> requestCode = makeRequestCode()</span><br><span class="line">        mCallbacks.put(requestCode, callback)</span><br><span class="line">        startActivityForResult(intent, requestCode)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">makeRequestCode</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> requestCode: <span class="built_in">Int</span></span><br><span class="line">        <span class="keyword">var</span> tryCount = <span class="number">0</span></span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            requestCode = mCodeGenerator.nextInt(<span class="number">0x0000FFFF</span>)</span><br><span class="line">            tryCount++</span><br><span class="line">        &#125; <span class="keyword">while</span> (mCallbacks.indexOfKey(requestCode) &gt;= <span class="number">0</span> &amp;&amp; tryCount &lt; <span class="number">10</span>)</span><br><span class="line">        <span class="keyword">return</span> requestCode</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onActivityResult</span><span class="params">(requestCode: <span class="type">Int</span>, resultCode: <span class="type">Int</span>, <span class="keyword">data</span>: <span class="type">Intent</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, <span class="keyword">data</span>)</span><br><span class="line"></span><br><span class="line">        Log.d(<span class="string">"zz"</span>, <span class="string">"requestCode = <span class="variable">$requestCode</span>  resultCode = <span class="variable">$resultCode</span>"</span>)</span><br><span class="line">        <span class="keyword">val</span> callback = mCallbacks.<span class="keyword">get</span>(requestCode)</span><br><span class="line">        Log.d(<span class="string">"zz"</span>, <span class="string">"callback = <span class="variable">$callback</span>"</span>)</span><br><span class="line">        mCallbacks.remove(requestCode)</span><br><span class="line">        callback?.onActivityResult(resultCode, <span class="keyword">data</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">newInstance</span><span class="params">()</span></span>: RouterFragment = RouterFragment()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="UpdateManager"><a href="#UpdateManager" class="headerlink" title="UpdateManager"></a>UpdateManager</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.app.Activity</span><br><span class="line"><span class="keyword">import</span> android.content.Context</span><br><span class="line"><span class="keyword">import</span> android.content.Intent</span><br><span class="line"><span class="keyword">import</span> android.net.Uri</span><br><span class="line"><span class="keyword">import</span> android.os.Build</span><br><span class="line"><span class="keyword">import</span> android.os.Environment</span><br><span class="line"><span class="keyword">import</span> android.provider.Settings</span><br><span class="line"><span class="keyword">import</span> android.support.v4.app.FragmentActivity</span><br><span class="line"><span class="keyword">import</span> android.support.v4.content.FileProvider</span><br><span class="line"><span class="keyword">import</span> android.util.Log</span><br><span class="line"><span class="keyword">import</span> android.widget.Toast</span><br><span class="line"><span class="keyword">import</span> com.wazing.myapplication.utils.ActivityLauncher</span><br><span class="line"><span class="keyword">import</span> okhttp3.*</span><br><span class="line"><span class="keyword">import</span> org.greenrobot.eventbus.EventBus</span><br><span class="line"><span class="keyword">import</span> java.io.*</span><br><span class="line"></span><br><span class="line"><span class="keyword">object</span> UpdateManager &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 模拟下载地址</span></span><br><span class="line">    <span class="comment">//    const val APK_URL = "http://a7.pc6.com/cx6/pc6_market.apk";</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">val</span> APK_URL = <span class="string">"http://a.gdown.baidu.com/data/wisegame/aaae681f1d26c241/linghunmianju_1013.apk"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> TAG = <span class="string">"UpdateManager"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> okHttpClient: OkHttpClient <span class="keyword">by</span> lazy &#123; OkHttpClient().newBuilder().build() &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">downloadFile</span><span class="params">(context: <span class="type">Context</span>, apkUrl: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">        <span class="comment">// 根据app包名创建一个目录</span></span><br><span class="line">        <span class="keyword">val</span> file = File(Environment.getExternalStorageDirectory(), context.packageName)</span><br><span class="line">        <span class="keyword">if</span> (!file.exists()) &#123;</span><br><span class="line">            file.mkdir()</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 根据url指定下载文件的位置，文件名取url / 最后边的名字，并拿到当前文件的大小</span></span><br><span class="line">        <span class="keyword">val</span> apkFile = File(file, apkUrl.substring(apkUrl.lastIndexOf(<span class="string">"/"</span>) + <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">var</span> currentFileLength: <span class="built_in">Long</span> = apkFile.length()</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 给当前请求添加一个header</span></span><br><span class="line">        <span class="keyword">val</span> request = Request.Builder()</span><br><span class="line">                .addHeader(<span class="string">"Range"</span>, <span class="string">"bytes=<span class="variable">$currentFileLength</span>-"</span>)</span><br><span class="line">                .url(apkUrl)</span><br><span class="line">                .build()</span><br><span class="line">        <span class="comment">// 发起网络请求</span></span><br><span class="line">        okHttpClient.newCall(request).enqueue(<span class="keyword">object</span> : Callback &#123;</span><br><span class="line">            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onFailure</span><span class="params">(call: <span class="type">Call</span>, e: <span class="type">IOException</span>)</span></span> &#123;</span><br><span class="line">                Log.e(TAG, <span class="string">"onFailure: "</span> + e.message, e)</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onResponse</span><span class="params">(call: <span class="type">Call</span>, response: <span class="type">Response</span>)</span></span> &#123;</span><br><span class="line">                <span class="keyword">val</span> responseBody = response.body() ?: <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">val</span> size = <span class="number">128</span> * <span class="number">8</span> * <span class="number">2</span></span><br><span class="line">                <span class="keyword">val</span> totalLength = responseBody.contentLength() + currentFileLength</span><br><span class="line">                <span class="keyword">val</span> buffer = ByteArray(size)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">var</span> inputStream: InputStream? = <span class="literal">null</span></span><br><span class="line">                <span class="keyword">var</span> bufferedInputStream: BufferedInputStream? = <span class="literal">null</span></span><br><span class="line">                <span class="keyword">var</span> randomAccessFile: RandomAccessFile? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    inputStream = responseBody.byteStream()</span><br><span class="line">                    bufferedInputStream = BufferedInputStream(inputStream, size)</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 创建RandomAccessFile实例，并设置跳过currentFileLength个字节</span></span><br><span class="line">                    randomAccessFile = RandomAccessFile(apkFile, <span class="string">"rw"</span>)</span><br><span class="line">                    randomAccessFile.seek(currentFileLength)</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">var</span> len = <span class="number">0</span></span><br><span class="line">                    <span class="keyword">while</span> (bufferedInputStream.read(buffer).apply &#123; len = <span class="keyword">this</span> &#125; != -<span class="number">1</span>) &#123;</span><br><span class="line">                        randomAccessFile.write(buffer, <span class="number">0</span>, len)</span><br><span class="line">                        currentFileLength += len.toLong()</span><br><span class="line"></span><br><span class="line">                        callbackProgress(currentFileLength, totalLength)</span><br><span class="line">                    &#125;</span><br><span class="line">                    callbackProgress(currentFileLength, totalLength)</span><br><span class="line">                    Log.d(TAG, <span class="string">"下载完成: <span class="subst">$&#123;apkFile.absoluteFile&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">                    (context <span class="keyword">as</span> Activity).runOnUiThread &#123;</span><br><span class="line">                        checkInstallPermission(context, <span class="keyword">object</span> : InstallPermissionCallBack &#123;</span><br><span class="line">                            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onGranted</span><span class="params">()</span></span> &#123;</span><br><span class="line">                                installApk(context, apkFile)</span><br><span class="line">                            &#125;</span><br><span class="line"></span><br><span class="line">                            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onDenied</span><span class="params">()</span></span> &#123;</span><br><span class="line">                                Toast.makeText(context, <span class="string">"未授权"</span>, Toast.LENGTH_SHORT).show()</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (e: IOException) &#123;</span><br><span class="line">                    e.printStackTrace()</span><br><span class="line">                    Log.e(TAG, e.message, e)</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    bufferedInputStream?.close()</span><br><span class="line">                    inputStream?.close()</span><br><span class="line">                    randomAccessFile?.close()</span><br><span class="line">                    responseBody.close()</span><br><span class="line">                    call.cancel()</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过EventBus回调下载进度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">callbackProgress</span><span class="params">(currentLength: <span class="type">Long</span>, totalLength: <span class="type">Long</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> progress = (currentLength * <span class="number">1.0f</span> / totalLength * <span class="number">100</span>).toInt()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> hasSubscriberEvent = EventBus.getDefault().hasSubscriberForEvent(Progress::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br><span class="line">        <span class="keyword">if</span> (hasSubscriberEvent) &#123;</span><br><span class="line">            EventBus.getDefault().post(Progress(progress, currentLength, totalLength))</span><br><span class="line">        &#125;</span><br><span class="line">        Log.d(TAG, <span class="string">"---&gt;&gt;&gt; progress = <span class="variable">$progress</span>  <span class="variable">$currentLength</span> / <span class="variable">$totalLength</span>"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">checkInstallPermission</span><span class="params">(context: <span class="type">Context</span>, callback: <span class="type">InstallPermissionCallBack</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (hasInstallPermission(context)) &#123;</span><br><span class="line">            callback.onGranted()</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            openInstallPermissionSetting(context, callback)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否有安装未知来源应用的权限</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">hasInstallPermission</span><span class="params">(context: <span class="type">Context</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) &#123;</span><br><span class="line">            <span class="keyword">return</span> context.packageManager.canRequestPackageInstalls()</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 检查 android 8.0 及以上是否有未知应用安装权限，无则打开未知应用安装权限授权界面</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">openInstallPermissionSetting</span><span class="params">(context: <span class="type">Context</span>, callback: <span class="type">InstallPermissionCallBack</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) &#123;</span><br><span class="line">            <span class="keyword">val</span> intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse(<span class="string">"package:"</span> + context.packageName))</span><br><span class="line">            ActivityLauncher.<span class="keyword">init</span>(context <span class="keyword">as</span> FragmentActivity).startActivityForResult(intent, <span class="keyword">object</span> : ActivityLauncher.Callback &#123;</span><br><span class="line">                <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onActivityResult</span><span class="params">(resultCode: <span class="type">Int</span>, <span class="keyword">data</span>: <span class="type">Intent</span>?)</span></span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (resultCode == Activity.RESULT_OK) &#123;</span><br><span class="line">                        callback.onGranted()</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        callback.onDenied()</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            callback.onGranted()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 安装apk，兼容7.0</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">installApk</span><span class="params">(context: <span class="type">Context</span>, file: <span class="type">File</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> intent = Intent(Intent.ACTION_VIEW)</span><br><span class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.N) &#123;</span><br><span class="line">            <span class="keyword">val</span> apkUri = FileProvider.getUriForFile(context, <span class="string">"<span class="subst">$&#123;context.packageName&#125;</span>.fileProvider"</span>, file)</span><br><span class="line">            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)</span><br><span class="line">            intent.setDataAndType(apkUri, <span class="string">"application/vnd.android.package-archive"</span>)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            intent.setDataAndType(Uri.fromFile(file), <span class="string">"application/vnd.android.package-archive"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</span><br><span class="line">        context.startActivity(intent)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">InstallPermissionCallBack</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">onGranted</span><span class="params">()</span></span></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">onDenied</span><span class="params">()</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="MainActivity"><a href="#MainActivity" class="headerlink" title="MainActivity"></a>MainActivity</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.Manifest</span><br><span class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle</span><br><span class="line"><span class="keyword">import</span> android.support.v4.app.ActivityCompat</span><br><span class="line"><span class="keyword">import</span> android.content.pm.PackageManager</span><br><span class="line"><span class="keyword">import</span> android.support.v4.content.ContextCompat</span><br><span class="line"><span class="keyword">import</span> kotlinx.android.synthetic.main.activity_main.*</span><br><span class="line"><span class="keyword">import</span> org.greenrobot.eventbus.EventBus</span><br><span class="line"><span class="keyword">import</span> org.greenrobot.eventbus.Subscribe</span><br><span class="line"><span class="keyword">import</span> org.greenrobot.eventbus.ThreadMode</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        setContentView(R.layout.activity_main)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ContextCompat.checkSelfPermission(<span class="keyword">this</span>,</span><br><span class="line">                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">            ActivityCompat.requestPermissions(<span class="keyword">this</span>,</span><br><span class="line">                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), <span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        download_file.setOnClickListener &#123;</span><br><span class="line">            UpdateManager.downloadFile(<span class="keyword">this</span>, UpdateManager.APK_URL)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Subscribe(threadMode = ThreadMode.MAIN)</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onEventDownloadProgress</span><span class="params">(progress: <span class="type">Progress</span>)</span></span> &#123;</span><br><span class="line">        progress_bar.progress = progress.progress</span><br><span class="line">        progress_text.text = <span class="string">"<span class="subst">$&#123;progress.progress&#125;</span>%"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onResume</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume()</span><br><span class="line">        EventBus.getDefault().register(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onPause</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onPause()</span><br><span class="line">        EventBus.getDefault().unregister(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="AndroidManifest-xml"><a href="#AndroidManifest-xml" class="headerlink" title="AndroidManifest.xml"></a>AndroidManifest.xml</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">package</span>=<span class="string">"com.wazing.myapplication"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.REQUEST_INSTALL_PACKAGES"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:networkSecurityConfig</span>=<span class="string">"@xml/network"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:roundIcon</span>=<span class="string">"@mipmap/ic_launcher_round"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">tools:ignore</span>=<span class="string">"GoogleAppIndexingWarning,UnusedAttribute"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".MainActivity"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">provider</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">"android.support.v4.content.FileProvider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:authorities</span>=<span class="string">"$&#123;applicationId&#125;.fileProvider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:exported</span>=<span class="string">"false"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:grantUriPermissions</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:name</span>=<span class="string">"android.support.FILE_PROVIDER_PATHS"</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:resource</span>=<span class="string">"@xml/file_paths"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">provider</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 参考: </p>
+<p><a href="https://github.com/square/okhttp" target="_blank" rel="noopener">https://github.com/square/okhttp</a></p>
+<p><a href="https://segmentfault.com/a/1190000015732010" target="_blank" rel="noopener">https://segmentfault.com/a/1190000015732010</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/16/光谷科技港面试总结-上/" rel="next" title="光谷科技港面试总结(上)">
+                <i class="fa fa-chevron-left"></i> 光谷科技港面试总结(上)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg" alt="Wazing">
+            
+              <p class="site-author-name" itemprop="name">Wazing</p>
+              <p class="site-description motion-element" itemprop="description">Merry Christmas.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wazing" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jokey1509@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本原理"><span class="nav-number">1.</span> <span class="nav-text">基本原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#java-io-RandomAccessFile"><span class="nav-number">1.1.</span> <span class="nav-text">java.io.RandomAccessFile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP-的范围请求"><span class="nav-number">1.2.</span> <span class="nav-text">HTTP 的范围请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#是否支持范围请求"><span class="nav-number">1.2.1.</span> <span class="nav-text">是否支持范围请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用范围请求"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用范围请求</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#断点续传-下载"><span class="nav-number">2.</span> <span class="nav-text">断点续传/下载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#请求指定范围数据"><span class="nav-number">2.1.</span> <span class="nav-text">请求指定范围数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据写入"><span class="nav-number">2.2.</span> <span class="nav-text">数据写入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回调数据"><span class="nav-number">2.3.</span> <span class="nav-text">回调数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限配置"><span class="nav-number">2.4.</span> <span class="nav-text">权限配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity中onActivityResult封装"><span class="nav-number">2.5.</span> <span class="nav-text">Activity中onActivityResult封装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么使用"><span class="nav-number">2.5.1.</span> <span class="nav-text">怎么使用?</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完整代码"><span class="nav-number">3.</span> <span class="nav-text">完整代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Progress"><span class="nav-number">3.1.</span> <span class="nav-text">Progress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-onActivityResult-方法回调封装"><span class="nav-number">3.2.</span> <span class="nav-text">Activity onActivityResult()方法回调封装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ActivityLauncher"><span class="nav-number">3.2.1.</span> <span class="nav-text">ActivityLauncher</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RouterFragment"><span class="nav-number">3.2.2.</span> <span class="nav-text">RouterFragment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UpdateManager"><span class="nav-number">3.3.</span> <span class="nav-text">UpdateManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MainActivity"><span class="nav-number">3.4.</span> <span class="nav-text">MainActivity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AndroidManifest-xml"><span class="nav-number">3.5.</span> <span class="nav-text">AndroidManifest.xml</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wazing</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("ahPzt2W1jDEs3gCvk3W6ieSR-gzGzoHsz", "GOdDJYwRiWppcwUIffjsSYgN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

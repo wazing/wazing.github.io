@@ -105,16 +105,19 @@
 
 
 
-<meta name="description" content="Merry Christmas.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Wazing blog">
-<meta property="og:url" content="https://wazing.github.io/archives/2019/06/index.html">
+<meta name="description" content="当我第一次学习Kotlin时，觉得val和var之间的区别似乎很简单，val表示不可变，var表示可变。 真相比这更微妙，val不代表不可变，val意味着只读。这意味着你不允许明确写入val，但它不能保证它们是不可变的。[1]">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin中的可变Vals">
+<meta property="og:url" content="https://wazing.github.io/2019/06/15/Kotlin中的可变Vals/index.html">
 <meta property="og:site_name" content="Wazing blog">
-<meta property="og:description" content="Merry Christmas.">
+<meta property="og:description" content="当我第一次学习Kotlin时，觉得val和var之间的区别似乎很简单，val表示不可变，var表示可变。 真相比这更微妙，val不代表不可变，val意味着只读。这意味着你不允许明确写入val，但它不能保证它们是不可变的。[1]">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190615.jpg">
+<meta property="og:updated_time" content="2019-06-15T09:22:45.651Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wazing blog">
-<meta name="twitter:description" content="Merry Christmas.">
+<meta name="twitter:title" content="Kotlin中的可变Vals">
+<meta name="twitter:description" content="当我第一次学习Kotlin时，觉得val和var之间的区别似乎很简单，val表示不可变，var表示可变。 真相比这更微妙，val不代表不可变，val意味着只读。这意味着你不允许明确写入val，但它不能保证它们是不可变的。[1]">
+<meta name="twitter:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190615.jpg">
 
 
 
@@ -144,13 +147,13 @@
 
 
 
-  <link rel="canonical" href="https://wazing.github.io/archives/2019/06/">
+  <link rel="canonical" href="https://wazing.github.io/2019/06/15/Kotlin中的可变Vals/">
 
 
 
 
 
-  <title>归档 | Wazing blog</title>
+  <title>Kotlin中的可变Vals | Wazing blog</title>
   
 
 
@@ -169,7 +172,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -253,142 +256,208 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/06/15/Kotlin中的可变Vals/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wazing">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wazing blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">Kotlin中的可变Vals</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-15T18:39:25+08:00">
+                2019-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 11 篇日志。 继续努力。
-      </span>
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/译文/" itemprop="url" rel="index">
+                    <span itemprop="name">译文</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2019">2019</h1>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
+             <span id="/2019/06/15/Kotlin中的可变Vals/" class="leancloud_visitors" data-flag-title="Kotlin中的可变Vals">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/06/15/Kotlin中的可变Vals/" itemprop="url">
-              
-                <span itemprop="name">Kotlin中的可变Vals</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-06-15T18:39:25+08:00" content="2019-06-15">
-          06-15
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/06/10/简介Kotlin-let-apply-with-rum等几种常用的拓展函数/" itemprop="url">
-              
-                <span itemprop="name">简介Kotlin let,run,also,apply,with等几种常用的拓展函数</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-06-10T21:34:24+08:00" content="2019-06-10">
-          06-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/06/05/Kotlin入门[持续更新]/" itemprop="url">
-              
-                <span itemprop="name">Kotlin入门[持续更新]</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-06-05T21:52:11+08:00" content="2019-06-05">
-          06-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
+      
+        <p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190615.jpg" alt="cover.jpg"></p>
+<p>当我第一次学习Kotlin时，觉得<code>val</code>和<code>var</code>之间的区别似乎很简单，<code>val</code>表示不可变，<code>var</code>表示可变。</p>
+<p>真相比这更微妙，<strong><code>val</code>不代表不可变，<code>val</code>意味着只读</strong>。这意味着你不允许明确写入<code>val</code>，但它不能保证它们是不可变的。<a href="#ramrk_1">[1]</a></p>
+<a id="more"></a>
+<blockquote>
+<p>原标题：Mutable vals in Kotlin</p>
+<p>原文作者：<a href="https://github.com/dlew" target="_blank" rel="noopener">Daniel Lew</a></p>
+<p>原文地址：<a href="https://blog.danlew.net/2017/05/30/mutable-vals-in-kotlin/" target="_blank" rel="noopener">https://blog.danlew.net/2017/05/30/mutable-vals-in-kotlin/</a></p>
+</blockquote>
+<h1 id="可变类属性"><a href="#可变类属性" class="headerlink" title="可变类属性"></a>可变类属性</h1><p>对于变量，不可变和只读之间的区别是一个有争议的问题。没有办法编写<code>val</code>变量或覆盖它的检索方式，因此（对于所有意图和目的）它是不可变的。</p>
+<p>但是，对于类属性，只读属性<code>val</code>会产生巨大的差异。</p>
+<p>在属性的上下文中，<code>val</code>与<code>var</code>指示属性是否存在getter/setter。<code>var</code>既有getter又有setter，而<code>val</code>只有getter。</p>
+<p>在简单的情况下，缺少setter意味着<code>val</code>类属性是不可变的。但是，可以为任何类属性添加自定义getter函数，允许您在每次有人访问该属性时返回您想要的任何内容。例如：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(<span class="keyword">val</span> birthDay: DateTime) &#123;</span><br><span class="line">  <span class="keyword">val</span> age: <span class="built_in">Int</span></span><br><span class="line">    <span class="keyword">get</span>() = yearsBetween(birthDay, DateTime.now())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如您所见，没有明确的设置方法<code>Person.age</code>，但<code>Person.age</code>会在当前日期更改时更改值。</p>
+<p>实际上，将其<code>Person.age</code>视为变量实际上是用词不当。它实际上是一个你正在调用的getter函数，它可能会改变调用值。</p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>当我在Kotlin学习可变vals时，我个人感到震惊。 我觉得被违背了<code>val</code>与<code>var</code>标记数据一样，不可变与可变是我学到的Kotlin的第一个很酷的功能之一！</p>
+<p>据我所知，对于<code>val</code>类属性，可定制的getter有两个参数：</p>
+<ol>
+<li>类属性只是getter / setter的简写，并且通常认为定制getter是正常的。</li>
+<li>可自定义的getter启用委派属性。</li>
+</ol>
+<p>委托属性是一个引人注目的用例，我将继续使用它们。但是，我发现在<code>val</code>暗示不可变引用时，更容易推理代码。不可变性使代码（尤其是并发代码）更容易使用。</p>
+<p>因此，我选择不为<code>val</code>类属性使用自定义getter 。如果只读类属性随时间改变值，我改为用正常函数替换该属性：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(<span class="keyword">val</span> birthDay: DateTime) &#123;</span><br><span class="line">  <span class="function"><span class="keyword">fun</span> <span class="title">age</span><span class="params">()</span></span>: <span class="built_in">Int</span> = yearsBetween(birthDay, DateTime.now())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种偏好是Kotlin编码惯例所建议的。 它声明只有在基础算法时才应该优先考虑函数的属性：</p>
+<ul>
+<li>不用throw</li>
+<li>有复杂性</li>
+<li>计算起来很低廉（或在第一次运行时计算）</li>
+<li>通过调用返回相同的结果</li>
+</ul>
+<p>覆盖getter并更改参考值会违反最后一个条件，因此请避免这样做！</p>
+<hr>
+<p></p><p id="ramrk_1">1: 为了简洁起见，在这篇文章中，“不可变”实际上意味着“不可变参考”。 您始终可以引用可变对象（如ArrayList）。 在这种情况下防止可变性需要比简单使用val更先进的技术，我不会在这里讨论。</p><p></p>
+
+      
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/10/简介Kotlin-let-apply-with-rum等几种常用的拓展函数/" rel="next" title="简介Kotlin let,run,also,apply,with等几种常用的拓展函数">
+                <i class="fa fa-chevron-left"></i> 简介Kotlin let,run,also,apply,with等几种常用的拓展函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -396,6 +465,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -416,8 +489,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -486,6 +568,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#可变类属性"><span class="nav-number">1.</span> <span class="nav-text">可变类属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">2.</span> <span class="nav-text">结论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -633,6 +731,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

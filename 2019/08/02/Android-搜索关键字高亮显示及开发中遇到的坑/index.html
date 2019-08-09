@@ -94,7 +94,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Android,">
 
 
 
@@ -105,16 +105,20 @@
 
 
 
-<meta name="description" content="Merry Christmas.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Wazing blog">
-<meta property="og:url" content="https://wazing.github.io/categories/Hello-World/index.html">
+<meta name="description" content="公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 搜索关键字高亮显示及开发中遇到的坑">
+<meta property="og:url" content="https://wazing.github.io/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/index.html">
 <meta property="og:site_name" content="Wazing blog">
-<meta property="og:description" content="Merry Christmas.">
+<meta property="og:description" content="公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/20190802/keyword_search.gif">
+<meta property="og:updated_time" content="2019-08-09T14:33:23.369Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wazing blog">
-<meta name="twitter:description" content="Merry Christmas.">
+<meta name="twitter:title" content="Android 搜索关键字高亮显示及开发中遇到的坑">
+<meta name="twitter:description" content="公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。">
+<meta name="twitter:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/20190802/keyword_search.gif">
 
 
 
@@ -144,13 +148,13 @@
 
 
 
-  <link rel="canonical" href="https://wazing.github.io/categories/Hello-World/">
+  <link rel="canonical" href="https://wazing.github.io/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/">
 
 
 
 
 
-  <title>分类: Hello World | Wazing blog</title>
+  <title>Android 搜索关键字高亮显示及开发中遇到的坑 | Wazing blog</title>
   
 
 
@@ -169,7 +173,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -253,53 +257,224 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>Hello World<small>分类</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wazing">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wazing blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2019/04/02/hello-world/" itemprop="url">
-              
-                <span itemprop="name">Hello World</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Android 搜索关键字高亮显示及开发中遇到的坑</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-04-02T00:00:00+08:00" content="2019-04-02">
-          04-02
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-02T23:32:30+08:00">
+                2019-08-02
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/" class="leancloud_visitors" data-flag-title="Android 搜索关键字高亮显示及开发中遇到的坑">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。</p>
+<a id="more"></a>
+<h1 id="演示图"><a href="#演示图" class="headerlink" title="演示图"></a>演示图</h1><p>先看看效果图：</p>
+<p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/20190802/keyword_search.gif" style="zoom:50%"></p>
+<p>关键代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// (?i) 忽略大小写，Pattern.quote()将字符串转为文本格式，防止keyword为特殊字符崩溃</span></span><br><span class="line"><span class="keyword">val</span> pattern: Pattern = Pattern.compile(<span class="string">"(?i)<span class="subst">$&#123;Pattern.quote(keyword)&#125;</span>"</span>)</span><br><span class="line"><span class="keyword">val</span> matcher = pattern.matcher(str)</span><br><span class="line"><span class="keyword">if</span> (matcher.find()) &#123;</span><br><span class="line">    <span class="keyword">val</span> ss = SpannableString(str)</span><br><span class="line">    ss.setSpan(</span><br><span class="line">        ForegroundColorSpan(Color.RED),</span><br><span class="line">        matcher.start(), matcher.end(),</span><br><span class="line">        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE</span><br><span class="line">    )</span><br><span class="line">    textView.text = ss</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    textView.text = str</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Pattern.quote(&quot;高亮关键字&quot;)</code>方法防止特殊字符被误认为正则表达式(如：$ * ^等)</p>
+<h1 id="SpannableString和SpannableStringBuilder"><a href="#SpannableString和SpannableStringBuilder" class="headerlink" title="SpannableString和SpannableStringBuilder"></a>SpannableString<code>和</code>SpannableStringBuilder</h1><p><code>SpannableString</code>和<code>SpannableStringBuilder</code>主要通过使用<code>setSpan(Object what, int start, int end, int flags)</code>改变文本样式。它们能做的事情很多，这里只讲一下改变文本颜色信息；</p>
+<p><code>setSpan(Object what, int start, int end, int flags)</code>对应的参数：</p>
+<ul>
+<li>what： 对应的各种Span，不同的Span对应不同的样式。已知的可用类有：<ul>
+<li><code>BackgroundColorSpan</code> : 文本背景色</li>
+<li><code>ForegroundColorSpan</code> : 文本颜色</li>
+<li><code>MaskFilterSpan</code> : 修饰效果，如模糊(BlurMaskFilter)浮雕</li>
+<li><code>RasterizerSpan</code> : 光栅效果</li>
+<li><code>StrikethroughSpan</code> : 删除线</li>
+<li><code>SuggestionSpan</code> : 相当于占位符</li>
+<li><code>UnderlineSpan</code> : 下划线</li>
+<li><code>AbsoluteSizeSpan</code> : 文本字体（绝对大小）</li>
+<li><code>DynamicDrawableSpan</code> : 设置图片，基于文本基线或底部对齐。</li>
+<li><code>ImageSpan</code> : 图片</li>
+<li><code>RelativeSizeSpan</code> : 相对大小（文本字体）</li>
+<li><code>ScaleXSpan</code> : 基于x轴缩放</li>
+<li><code>StyleSpan</code> : 字体样式：粗体、斜体等</li>
+<li><code>SubscriptSpan</code> : 下标（数学公式会用到）</li>
+<li><code>SuperscriptSpan</code> : 上标（数学公式会用到）</li>
+<li><code>TextAppearanceSpan</code> : 文本外貌（包括字体、大小、样式和颜色）</li>
+<li><code>TypefaceSpan</code> : 文本字体</li>
+<li><code>URLSpan</code> : 文本超链接</li>
+<li><code>ClickableSpan</code> : 点击事件</li>
+</ul>
+</li>
+<li>start： 指定Span的开始位置</li>
+<li>end： 指定Span的结束位置，并不包括这个位置。</li>
+<li>flags：取值有如下四个<ul>
+<li><code>Spannable. SPAN_INCLUSIVE_EXCLUSIVE</code>：前面包括，后面不包括，即在文本前插入新的文本会应用该样式，而在文本后插入新文本不会应用该样式</li>
+<li><code>Spannable. SPAN_INCLUSIVE_INCLUSIVE</code>：前面包括，后面包括，即在文本前插入新的文本会应用该样式，而在文本后插入新文本也会应用该样式</li>
+<li><code>Spannable. SPAN_EXCLUSIVE_EXCLUSIVE</code>：前面不包括，后面不包括</li>
+<li><code>Spannable. SPAN_EXCLUSIVE_INCLUSIVE</code>：前面不包括，后面包括</li>
+</ul>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过<code>String.indexOf(&quot;keyword&quot;)</code>只会使第一次出现的<code>keyword</code>字符高亮，而通过正则去匹配能高亮所有<code>keyword</code>字符，并且正则中可以有多种匹配方式；</p>
+<hr>
+<p>demo源码: <a href="https://github.com/wazing/android-demos/tree/master/KeywordSearchDemo" target="_blank" rel="noopener">https://github.com/wazing/android-demos/tree/master/KeywordSearchDemo</a></p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/12/Android-Jetpack组件之Lifecycler/" rel="next" title="Android Jetpack组件之Lifecycler">
+                <i class="fa fa-chevron-left"></i> Android Jetpack组件之Lifecycler
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -307,6 +482,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -327,8 +506,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -406,6 +594,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#演示图"><span class="nav-number">1.</span> <span class="nav-text">演示图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SpannableString和SpannableStringBuilder"><span class="nav-number">2.</span> <span class="nav-text">SpannableString和SpannableStringBuilder</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -553,6 +757,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

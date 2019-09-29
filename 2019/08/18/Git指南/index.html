@@ -94,7 +94,7 @@
 
 
 
-  <meta name="keywords" content="Android,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -105,21 +105,19 @@
 
 
 
-<meta name="description" content="公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。">
-<meta name="keywords" content="Android">
+<meta name="description" content="前言Git 是一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理。Git是Linus Torvalds为了帮助管理Linux内核开发而开发的一个开放源码的版本控制软件。 GitHub 是最大的 Git 版本库托管商，是成千上万的开发者和项目能够合作进行的中心。 大部分 Git 版本库都托管在 GitHub，很多开源项目使用 GitHub 实现 Git 托管、问题追踪、">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android 搜索关键字高亮显示及开发中遇到的坑">
-<meta property="og:url" content="https://wazing.github.io/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/index.html">
+<meta property="og:title" content="Git指南">
+<meta property="og:url" content="https://wazing.github.io/2019/08/18/Git指南/index.html">
 <meta property="og:site_name" content="Wazing blog">
-<meta property="og:description" content="公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。">
+<meta property="og:description" content="前言Git 是一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理。Git是Linus Torvalds为了帮助管理Linux内核开发而开发的一个开放源码的版本控制软件。 GitHub 是最大的 Git 版本库托管商，是成千上万的开发者和项目能够合作进行的中心。 大部分 Git 版本库都托管在 GitHub，很多开源项目使用 GitHub 实现 Git 托管、问题追踪、">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190802.jpeg">
-<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/20190802/keyword_search.gif">
-<meta property="og:updated_time" content="2019-09-29T16:54:20.412Z">
+<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190818.jpeg">
+<meta property="og:updated_time" content="2019-09-29T16:50:00.174Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android 搜索关键字高亮显示及开发中遇到的坑">
-<meta name="twitter:description" content="公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。">
-<meta name="twitter:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190802.jpeg">
+<meta name="twitter:title" content="Git指南">
+<meta name="twitter:description" content="前言Git 是一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理。Git是Linus Torvalds为了帮助管理Linux内核开发而开发的一个开放源码的版本控制软件。 GitHub 是最大的 Git 版本库托管商，是成千上万的开发者和项目能够合作进行的中心。 大部分 Git 版本库都托管在 GitHub，很多开源项目使用 GitHub 实现 Git 托管、问题追踪、">
+<meta name="twitter:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190818.jpeg">
 
 
 
@@ -149,13 +147,13 @@
 
 
 
-  <link rel="canonical" href="https://wazing.github.io/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/">
+  <link rel="canonical" href="https://wazing.github.io/2019/08/18/Git指南/">
 
 
 
 
 
-  <title>Android 搜索关键字高亮显示及开发中遇到的坑 | Wazing blog</title>
+  <title>Git指南 | Wazing blog</title>
   
 
 
@@ -272,7 +270,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/08/18/Git指南/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wazing">
@@ -289,7 +287,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android 搜索关键字高亮显示及开发中遇到的坑</h1>
+          <h1 class="post-title" itemprop="name headline">Git指南</h1>
         
 
         <div class="post-meta">
@@ -301,8 +299,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-02T23:32:30+08:00">
-                2019-08-02
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-18T20:20:38+08:00">
+                2019-08-18
               </time>
             
 
@@ -341,7 +339,7 @@
 
           
           
-             <span id="/2019/08/02/Android-搜索关键字高亮显示及开发中遇到的坑/" class="leancloud_visitors" data-flag-title="Android 搜索关键字高亮显示及开发中遇到的坑">
+             <span id="/2019/08/18/Git指南/" class="leancloud_visitors" data-flag-title="Git指南">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -372,52 +370,76 @@
       
 
       
-        <p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190802.jpeg" alt="conver.jpeg"></p>
-<p>公司项目中有一个搜索功能，需求是要把搜索关键字高亮显示出来，很早之前就在网上看到有这样的功能，本来觉得是一个很简单的问题，但在测试中还是出了些Bug，这里记录一下踩坑点。</p>
+        <p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190818.jpeg" alt="conver.jpeg"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a> 是一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理。Git是Linus Torvalds为了帮助管理Linux内核开发而开发的一个开放源码的版本控制软件。</p>
+<p>GitHub 是最大的 Git 版本库托管商，是成千上万的开发者和项目能够合作进行的中心。 大部分 Git 版本库都托管在 GitHub，很多开源项目使用 GitHub 实现 Git 托管、问题追踪、代码审查以及其它事情。 </p>
+<h2 id="git下载"><a href="#git下载" class="headerlink" title="git下载"></a>git下载</h2><p>选择对应的版本下载: <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">https://git-scm.com/downloads</a></p>
+<p>安装完成后系统会自动配置环境变量, 查看版本号:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
-<h1 id="演示图"><a href="#演示图" class="headerlink" title="演示图"></a>演示图</h1><p>先看看效果图：</p>
-<p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/20190802/keyword_search.gif" style="zoom:50%"></p>
-<p>关键代码：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// (?i) 忽略大小写，Pattern.quote()将字符串转为文本格式，防止keyword为特殊字符崩溃</span></span><br><span class="line"><span class="keyword">val</span> pattern: Pattern = Pattern.compile(<span class="string">"(?i)<span class="subst">$&#123;Pattern.quote(keyword)&#125;</span>"</span>)</span><br><span class="line"><span class="keyword">val</span> matcher = pattern.matcher(str)</span><br><span class="line"><span class="keyword">if</span> (matcher.find()) &#123;</span><br><span class="line">    <span class="keyword">val</span> ss = SpannableString(str)</span><br><span class="line">    ss.setSpan(</span><br><span class="line">        ForegroundColorSpan(Color.RED),</span><br><span class="line">        matcher.start(), matcher.end(),</span><br><span class="line">        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE</span><br><span class="line">    )</span><br><span class="line">    textView.text = ss</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    textView.text = str</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>Pattern.quote(&quot;高亮关键字&quot;)</code>方法防止特殊字符被误认为正则表达式(如：$ * ^等)</p>
-<h1 id="SpannableString和SpannableStringBuilder"><a href="#SpannableString和SpannableStringBuilder" class="headerlink" title="SpannableString和SpannableStringBuilder"></a>SpannableString<code>和</code>SpannableStringBuilder</h1><p><code>SpannableString</code>和<code>SpannableStringBuilder</code>主要通过使用<code>setSpan(Object what, int start, int end, int flags)</code>改变文本样式。它们能做的事情很多，这里只讲一下改变文本颜色信息；</p>
-<p><code>setSpan(Object what, int start, int end, int flags)</code>对应的参数：</p>
-<ul>
-<li>what： 对应的各种Span，不同的Span对应不同的样式。已知的可用类有：<ul>
-<li><code>BackgroundColorSpan</code> : 文本背景色</li>
-<li><code>ForegroundColorSpan</code> : 文本颜色</li>
-<li><code>MaskFilterSpan</code> : 修饰效果，如模糊(BlurMaskFilter)浮雕</li>
-<li><code>RasterizerSpan</code> : 光栅效果</li>
-<li><code>StrikethroughSpan</code> : 删除线</li>
-<li><code>SuggestionSpan</code> : 相当于占位符</li>
-<li><code>UnderlineSpan</code> : 下划线</li>
-<li><code>AbsoluteSizeSpan</code> : 文本字体（绝对大小）</li>
-<li><code>DynamicDrawableSpan</code> : 设置图片，基于文本基线或底部对齐。</li>
-<li><code>ImageSpan</code> : 图片</li>
-<li><code>RelativeSizeSpan</code> : 相对大小（文本字体）</li>
-<li><code>ScaleXSpan</code> : 基于x轴缩放</li>
-<li><code>StyleSpan</code> : 字体样式：粗体、斜体等</li>
-<li><code>SubscriptSpan</code> : 下标（数学公式会用到）</li>
-<li><code>SuperscriptSpan</code> : 上标（数学公式会用到）</li>
-<li><code>TextAppearanceSpan</code> : 文本外貌（包括字体、大小、样式和颜色）</li>
-<li><code>TypefaceSpan</code> : 文本字体</li>
-<li><code>URLSpan</code> : 文本超链接</li>
-<li><code>ClickableSpan</code> : 点击事件</li>
-</ul>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>安装完成后，需要配置用户名和邮箱地址，因为这些内容会出现在你的每一个提交（commit）里面的;</p>
+<h2 id="配置用户名和密码"><a href="#配置用户名和密码" class="headerlink" title="配置用户名和密码"></a>配置用户名和密码</h2><p>Git的配置信息分为全局和项目两种，上面命令中带了<code>&quot;--global&quot;</code>参数，这就意味是在进行全局配置，它会影响本机上的每个一个Git项目。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name "you name"</span><br><span class="line">$ git config --global user.email "you email"</span><br></pre></td></tr></table></figure></p>
+<p>不需要全局配置的去掉上边的<code>&quot;--global&quot;</code>即可(公司项目和个人开源项目会有该需求);</p>
+<blockquote>
+<p>GitHub 使用用户邮件地址区分 Git 提交。 如果你在自己的提交中使用了多个邮件地址，希望 GitHub 可以正确地将它们连接起来，你需要在管理页面的 Emails 部分添加你拥有的所有邮箱地址。</p>
+</blockquote>
+<h2 id="查看用户名和邮箱"><a href="#查看用户名和邮箱" class="headerlink" title="查看用户名和邮箱"></a>查看用户名和邮箱</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 查看用户名</span><br><span class="line">$ git config user.name</span><br><span class="line"># 查看邮箱</span><br><span class="line">$ git config user.email</span><br></pre></td></tr></table></figure>
+<p>或者可以通过<code>.gitconfig</code>文件查看，该文件一般在个人文件根目录下<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat .gitconfig</span><br></pre></td></tr></table></figure></p>
+<h1 id="创建github帐号"><a href="#创建github帐号" class="headerlink" title="创建github帐号"></a>创建github帐号</h1><p><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>是一个面向开源及私有软件项目的托管平台，因为只支持git 作为唯一的版本库格式进行托管，故名GitHub。</p>
+<ol>
+<li>打开官网：<a href="https://github.com" target="_blank" rel="noopener">https://github.com</a> 右上角 <code>sign in or sign up</code> 分别为登录或注册，点击注册 后，需要填写一个 username(用户名) 、email(邮箱地址) 和 password(密码) 填写完成后一路提交。</li>
+<li>注册完成后，点击头像—setting—SSH and GPG keys—New SSH key</li>
+<li><p id="config_ssh">等待下边配置ssh key, 后面创建生成<code>id_rsa.pub</code>文件后，将该文件内容复制到<code>key</code>中<br></p>
+
 </li>
-<li>start： 指定Span的开始位置</li>
-<li>end： 指定Span的结束位置，并不包括这个位置。</li>
-<li>flags：取值有如下四个<ul>
-<li><code>Spannable. SPAN_INCLUSIVE_EXCLUSIVE</code>：前面包括，后面不包括，即在文本前插入新的文本会应用该样式，而在文本后插入新文本不会应用该样式</li>
-<li><code>Spannable. SPAN_INCLUSIVE_INCLUSIVE</code>：前面包括，后面包括，即在文本前插入新的文本会应用该样式，而在文本后插入新文本也会应用该样式</li>
-<li><code>Spannable. SPAN_EXCLUSIVE_EXCLUSIVE</code>：前面不包括，后面不包括</li>
-<li><code>Spannable. SPAN_EXCLUSIVE_INCLUSIVE</code>：前面不包括，后面包括</li>
-</ul>
+</ol>
+<h1 id="配置ssh-key"><a href="#配置ssh-key" class="headerlink" title="配置ssh key"></a>配置ssh key</h1><p>SSH 为 <a href="https://baike.baidu.com/item/Secure%20Shell" target="_blank" rel="noopener">Secure Shell</a> 的缩写，由 IETF 的网络小组（Network Working Group）所制定。利用 SSH 协议可以有效防止远程管理过程中的信息泄露问题。简单说，SSH是一种网络协议，用于计算机之间的加密登录。</p>
+<ol>
+<li>检查是否存在<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/.ssh</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过<code>String.indexOf(&quot;keyword&quot;)</code>只会使第一次出现的<code>keyword</code>字符高亮，而通过正则去匹配能高亮所有<code>keyword</code>字符，并且正则中可以有多种匹配方式；</p>
-<hr>
-<p>demo源码: <a href="https://github.com/wazing/android-demos/tree/master/KeywordSearchDemo" target="_blank" rel="noopener">https://github.com/wazing/android-demos/tree/master/KeywordSearchDemo</a></p>
+</ol>
+<p>如果存在，先将已有的ssh备份，或者将新建的ssh生成到另外的目录下，如果不存在，通过默认的参数直接生成ssh</p>
+<ol start="2">
+<li>生成ssh key<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C "you email"</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>期间会提示你输入key的文件名称, 密码和确认密码, 一路Enter</p>
+<p>完成后会在个人文件夹根目录有一个<code>.ssh</code>文件夹, 打开后有两个文件 <code>id_rsa</code>和<code>id_rsa.pub</code></p>
+<ol start="3">
+<li>将ssh key保存在github中</li>
+</ol>
+<p>打开<code>id_rsa.pub</code>文件, 将里边的内容复制到<a href="#config_ssh">配置ssh key</a>,  <code>title</code>代表别名, 用作区分, 可不填可填任意字符</p>
+<h1 id="git的基础使用"><a href="#git的基础使用" class="headerlink" title="git的基础使用"></a>git的基础使用</h1><p>git的基础使用很简单，比如在github中创建一个空的仓库就会有相应的命令提示:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echo "# test" &gt;&gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "first commit"</span><br><span class="line">git remote add origin git@github.com:wazing/test.git</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>echo “# test” &gt;&gt; README.md</p>
+<p>终端的命令，表示创建一个<code>README.md</code>文件并写入字符<code># test</code>；</p>
+</li>
+<li><p>git init</p>
+<p>创建新的 Git 仓库。 你可以在任何时候、任何目录中这么做，完全是本地化的；</p>
+</li>
+<li><p>git add README.md</p>
+<p>将文件添加到本地缓存中，<code>README.md</code>就是刚刚创建的文件；</p>
+</li>
+<li><p>git reset HEAD</p>
+<p>撤销已在缓存区的文件，如：<code>git reset HEAD -- README.md</code> 撤销刚刚添加在本地缓存中的<code>README.md</code>文件;</p>
+</li>
+<li><p>git status</p>
+<p>查看在你上次提交之后是否有修改。如果在后面追加<code>-s</code>则是查看简短信息，反之查看详细信息。</p>
+</li>
+<li><p>git commit</p>
+<p>将缓存区内容添加到仓库中。<code>git commit -m &quot;Add README.md&quot;</code> #后面的文本为提交日志，建议每次提交到仓库都要写提交日志。</p>
+</li>
+<li><p>git pull origin master</p>
+<p>把远程仓库代码合并，以保证两端同步，建议每次提交前先同步代码；</p>
+</li>
+<li><p>git push origin master</p>
+<p>把本地代码提交到<code>github</code>仓库<code>master</code>分支。一般在<code>push</code>前都会先<code>pull</code>，这样不容易造成冲突。</p>
+</li>
+<li><p>git clone</p>
+<p>拷贝一个Git仓库到本地，让自己能够查看该项目，或者进行修改。如果你需要与他人合作一个项目，或者想要复制一个项目，看看代码，你就可以克隆那个项目。 比如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/wazing/WanAndroid</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 
       
     </div>
@@ -433,12 +455,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Android/" rel="tag"># Android</a>
-          
-        </div>
-      
 
       
       
@@ -448,8 +464,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/12/Android-Jetpack组件之Lifecycler/" rel="next" title="Android Jetpack组件之Lifecycler">
-                <i class="fa fa-chevron-left"></i> Android Jetpack组件之Lifecycler
+              <a href="/2019/08/13/Android-子线程中可不可以更新UI？/" rel="next" title="Android 子线程中可不可以更新UI？">
+                <i class="fa fa-chevron-left"></i> Android 子线程中可不可以更新UI？
               </a>
             
           </div>
@@ -457,10 +473,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/13/Android-子线程中可不可以更新UI？/" rel="prev" title="Android 子线程中可不可以更新UI？">
-                Android 子线程中可不可以更新UI？ <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -610,7 +622,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#演示图"><span class="nav-number">1.</span> <span class="nav-text">演示图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SpannableString和SpannableStringBuilder"><span class="nav-number">2.</span> <span class="nav-text">SpannableString和SpannableStringBuilder</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git下载"><span class="nav-number">1.1.</span> <span class="nav-text">git下载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置用户名和密码"><span class="nav-number">2.1.</span> <span class="nav-text">配置用户名和密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看用户名和邮箱"><span class="nav-number">2.2.</span> <span class="nav-text">查看用户名和邮箱</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建github帐号"><span class="nav-number">3.</span> <span class="nav-text">创建github帐号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置ssh-key"><span class="nav-number">4.</span> <span class="nav-text">配置ssh key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git的基础使用"><span class="nav-number">5.</span> <span class="nav-text">git的基础使用</span></a></li></ol></div>
             
 
           </div>

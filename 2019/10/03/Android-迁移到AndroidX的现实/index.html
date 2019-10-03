@@ -105,17 +105,17 @@
 
 
 
-<meta name="description" content="2019年武汉4月份面试中所涉及到的部分题目记录。">
+<meta name="description" content="原标题：The Reality of Migrating to AndroidX 原文地址：https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/ 原文作者：Dan Lew 作者推特：https://twitter.com/danlew42 今年，谷歌将Android库的支持重新命名为Android Jetp">
 <meta property="og:type" content="article">
-<meta property="og:title" content="201904面试记录">
-<meta property="og:url" content="https://wazing.github.io/2019/04/05/201904面试记录/index.html">
+<meta property="og:title" content="Android 迁移到AndroidX的现实">
+<meta property="og:url" content="https://wazing.github.io/2019/10/03/Android-迁移到AndroidX的现实/index.html">
 <meta property="og:site_name" content="Wazing blog">
-<meta property="og:description" content="2019年武汉4月份面试中所涉及到的部分题目记录。">
+<meta property="og:description" content="原标题：The Reality of Migrating to AndroidX 原文地址：https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/ 原文作者：Dan Lew 作者推特：https://twitter.com/danlew42 今年，谷歌将Android库的支持重新命名为Android Jetp">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-05T16:07:07.598Z">
+<meta property="og:updated_time" content="2019-10-03T04:17:45.547Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="201904面试记录">
-<meta name="twitter:description" content="2019年武汉4月份面试中所涉及到的部分题目记录。">
+<meta name="twitter:title" content="Android 迁移到AndroidX的现实">
+<meta name="twitter:description" content="原标题：The Reality of Migrating to AndroidX 原文地址：https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/ 原文作者：Dan Lew 作者推特：https://twitter.com/danlew42 今年，谷歌将Android库的支持重新命名为Android Jetp">
 
 
 
@@ -145,13 +145,13 @@
 
 
 
-  <link rel="canonical" href="https://wazing.github.io/2019/04/05/201904面试记录/">
+  <link rel="canonical" href="https://wazing.github.io/2019/10/03/Android-迁移到AndroidX的现实/">
 
 
 
 
 
-  <title>201904面试记录 | Wazing blog</title>
+  <title>Android 迁移到AndroidX的现实 | Wazing blog</title>
   
 
 
@@ -268,7 +268,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/04/05/201904面试记录/">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/10/03/Android-迁移到AndroidX的现实/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wazing">
@@ -285,7 +285,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">201904面试记录</h1>
+          <h1 class="post-title" itemprop="name headline">Android 迁移到AndroidX的现实</h1>
         
 
         <div class="post-meta">
@@ -297,8 +297,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-05T00:00:00+08:00">
-                2019-04-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-03T12:09:52+08:00">
+                2019-10-03
               </time>
             
 
@@ -320,8 +320,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -337,7 +337,7 @@
 
           
           
-             <span id="/2019/04/05/201904面试记录/" class="leancloud_visitors" data-flag-title="201904面试记录">
+             <span id="/2019/10/03/Android-迁移到AndroidX的现实/" class="leancloud_visitors" data-flag-title="Android 迁移到AndroidX的现实">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -368,38 +368,40 @@
       
 
       
-        <p>2019年武汉4月份面试中所涉及到的部分题目记录。<br><a id="more"></a></p>
-<h1 id="介绍一下Activity的几种启动模式"><a href="#介绍一下Activity的几种启动模式" class="headerlink" title="介绍一下Activity的几种启动模式"></a>介绍一下Activity的几种启动模式</h1><h2 id="standard"><a href="#standard" class="headerlink" title="standard"></a>standard</h2><p>标准启动模式，也是activity的默认启动模式。在这种模式下启动的activity可以被多次实例化，即在同一个任务中可以存在多个activity的实例，每个实例都会处理一个Intent对象。</p>
-<blockquote>
-<p>如果Activity A的启动模式为standard，并且A已经启动，在A中再次启动Activity A，即调用startActivity(Intent(this, A::class.java))，会在A的上面再次启动一个A的实例，即当前的桟中的状态为A–&gt;A。</p>
-</blockquote>
-<h2 id="singleTop"><a href="#singleTop" class="headerlink" title="singleTop"></a>singleTop</h2><p>以singleTop模式启动的activity的实例已经存在于任务桟的桟顶，那么再启动这个Activity时，不会创建新的实例，而是重用位于栈顶的那个实例，并且会调用该实例的<strong>onNewIntent()</strong>方法将<strong>Intent</strong>对象传递到这个实例中。</p>
-<blockquote>
-<p>假设Activity A的启动模式为singleTop，当Activity A的实例已经存在任务桟中，那么再次调用startActivity(Intent(this, A::class.java))启动Activity A时，不会再创建Activity A的实例，而是重用原来的实例，并且调用原来实例的onNewIntent()方法。这是任务桟中还是这有一个A的实例。</p>
-<p>如果以singleTop模式启动的activity的一个实例已经存在与任务桟中，但是不在桟顶，那么它的行为和standard模式相同，也会创建多个实例。</p>
-</blockquote>
-<h2 id="singleTask"><a href="#singleTask" class="headerlink" title="singleTask"></a>singleTask</h2><p>谷歌的官方文档上称，如果一个activity的启动模式为singleTask，那么系统总会在一个新任务的最底部（root）启动这个activity，并且被这个activity启动的其他activity会和该activity同时存在于这个新任务中。如果系统中已经存在这样的一个activity则会重用这个实例，并且调用他的onNewIntent()方法。即，这样的一个activity在系统中只会存在一个实例。</p>
-<blockquote>
-<p>关于singleTask有些不确定性，具体后续补充…sorry</p>
-</blockquote>
-<h2 id="singleInstance"><a href="#singleInstance" class="headerlink" title="singleInstance"></a>singleInstance</h2><p>总是在新的任务中开启，并且这个新的任务中有且只有这一个实例，也就是说被该实例启动的其他activity会自动运行于另一个任务中。当再次启动该activity的实例时，会重用已存在的任务和实例。并且会调用这个实例的onNewIntent()方法，将Intent实例传递到该实例中。和singleTask相同，同一时刻在系统中只会存在一个这样的Activity实例。</p>
-<h1 id="父类的静态方法能不能被子类重写"><a href="#父类的静态方法能不能被子类重写" class="headerlink" title="父类的静态方法能不能被子类重写"></a>父类的静态方法能不能被子类重写</h1><p>首先答案是不能！</p>
-<p>这个问题有两个关键字，一个是静态方法，一个是重写。</p>
-<p>我们来先说说重写，可能很多初学的朋友分不清重写和重载的区别。</p>
+        <p>原标题：<strong>The Reality of Migrating to AndroidX</strong></p>
+<p>原文地址：<a href="https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/" target="_blank" rel="noopener">https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/</a></p>
+<p>原文作者：Dan Lew</p>
+<p>作者推特：<a href="https://twitter.com/danlew42" target="_blank" rel="noopener">https://twitter.com/danlew42</a></p>
+<p>今年，谷歌将Android库的支持重新命名为<a href="https://developer.android.com/jetpack/" target="_blank" rel="noopener">Android Jetpack（又称AndroidX）。</a></p>
+<p>与开发人员特别相关的是他们如何重新打包所有库。它们的 <a href="https://developer.android.com/jetpack/androidx/migrate#artifact_mappings" target="_blank" rel="noopener">maven坐标</a> 不仅发生了变化，而且<a href="https://developer.android.com/jetpack/androidx/migrate#class_mappings" target="_blank" rel="noopener">每个类的包名也发生了变化</a>。</p>
+<p>例如，<code>android.support.v7.app.AppCompatActivity</code>现在<code>androidx.appcompat.app.AppCompatActivity</code>。</p>
+<p>旧的人工产品和包装名称是混乱不清的，所以从长远来看，这是一个伟大的举动。但是，在短期内，升级需要对代码库进行大量更改。</p>
+<p>从理论上讲，这种迁移应该像在<a href="https://developer.android.com/jetpack/androidx/migrate#migrate" target="_blank" rel="noopener">Android Studio中运行“Migrate to AndroidX”</a>工具一样简单。如果这适用于您的应用程序，那太棒了！现在停止阅读这篇文章！</p>
+<p>不幸的是，我们发现它比那更麻烦。以下是我们实际完成迁移的方式。</p>
+<a id="more"></a>
+<h1 id="迁移准备"><a href="#迁移准备" class="headerlink" title="迁移准备"></a>迁移准备</h1><p>在开始调整迁移到AndroidX的想法之前，<strong>您应该了解所有当前支持库工件的最新版本</strong>。这样，从旧工件到新工件的跳跃应该只需要更改包名称。</p>
+<p>在大多数情况下，这意味着在支持库的v28.0.0版本上。但是，一些支持库使用其他版本控制方案：例如，我们必须将<a href="https://developer.android.com/kotlin/ktx" target="_blank" rel="noopener">Android KTX</a>升级到v0.3，将<a href="https://developer.android.com/topic/libraries/architecture/room" target="_blank" rel="noopener">Room持久性库</a>升级到v1.1.1。</p>
+<p>提前做好此准备工作非常适合揭示需要较旧版本支持库且必须更新的代码库部分。</p>
+<p>例如，我们发现SqlDelight需要旧版本的Room持久性库。最后，我们要求（并收到）一个版本的SqlDelight，通过支持最新的持久性库（转发，Square！）使转换变得更容易。</p>
+<h1 id="迁移失败"><a href="#迁移失败" class="headerlink" title="迁移失败"></a>迁移失败</h1><p>一旦您的依赖关系连续出现，下一步就是尝<strong>试Android Studio</strong>的“迁移到AndroidX”工具。<strong>不幸的是，它以多种方式失败了我们的代码库：</strong></p>
 <ul>
-<li><p><strong>重写：</strong>子类继承父类后，定义了一个和父类中的一模一样方法，这个一模一样是值方法名和参数的定义一模一样。这时候子类要实现这个方法，就称为对父类方法的重写。</p>
-</li>
-<li><p><strong>重载：</strong>子类继承父类后，定义了一个和父类中相同名字的方法，但是参数不一样（必须），实现也不同（可选），这就是重载。</p>
-</li>
+<li>AndroidX工件的maven坐标通常是过时的（指的是alpha版本而不是最新的稳定版本）。</li>
+<li>它实际上并没有找到/替换所有需要更新的包引用。</li>
+<li>它对我们的代码库进行了无关的更改，它应该只触及import语句，但它也不必要地修改了其他引用。</li>
 </ul>
-<p><strong>静态方法：</strong>java中，static修饰符修饰的方法就是静态方法。所谓静态就是指：在编译之后所分配的内存会一直存在（不会被回收），直到程序退出内存才会释放这个空间。</p>
-<p>即，被static修饰的方法从程序开始运行后就已经分配了内存，也就是说只能通过类点方法名调用。子类中如果定义了相同名称的静态方法，只能说是在内存中又分配了一块给子类的静态方法。</p>
-<p>静态方法是不能被类的实例所调用，子类继承父类只能通过实例调用父类中public/protected修饰的方法。</p>
-<h1 id="Handler的sendMessage和post的区别"><a href="#Handler的sendMessage和post的区别" class="headerlink" title="Handler的sendMessage和post的区别"></a>Handler的sendMessage和post的区别</h1><p>Hanlder用于线程之间的通讯</p>
-<h2 id="两种方式用法"><a href="#两种方式用法" class="headerlink" title="两种方式用法"></a>两种方式用法</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> handler = <span class="keyword">object</span> : Handler() &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">handleMessage</span><span class="params">(msg: <span class="type">Message</span>?)</span></span> &#123;</span><br><span class="line">            <span class="keyword">super</span>.handleMessage(msg)</span><br><span class="line">            <span class="keyword">when</span>(msg?.what)&#123;</span><br><span class="line">                <span class="number">1</span> -&gt; println(<span class="string">"handler.sendMessage"</span>)</span><br><span class="line">                <span class="keyword">else</span> -&gt; <span class="built_in">Unit</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> msg = Message()</span><br><span class="line">        msg.what = <span class="number">1</span></span><br><span class="line">        msg.obj = <span class="string">"sendMessage"</span></span><br><span class="line">        handler.sendMessage(msg)</span><br><span class="line"></span><br><span class="line">        handler.post &#123;</span><br><span class="line">            <span class="comment">// 处理UI等</span></span><br><span class="line">            println(<span class="string">"handler.post"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里只考虑 <code>hanlder</code>的使用未考虑内存泄漏问题，使用这两种方法都能实现更新UI，那么最后是谁调用谁，调用顺序是怎么样的，我们先看下源码：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以下为 android.os.Handler.java 部分源码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// handler.sendMessage 方法源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> boolean sendMessage(Message msg)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> sendMessageDelayed(msg, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// handler.post 方法源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> boolean post(Runnable r)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">return</span>  sendMessageDelayed(getPostMessage(r), <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// handler.post中通过调用 getPostMessage 私有静态方法返回一个message对象</span></span><br><span class="line"><span class="keyword">private</span> static Message getPostMessage(Runnable r) &#123;</span><br><span class="line">        Message m = Message.obtain();</span><br><span class="line">        m.callback = r;</span><br><span class="line">        <span class="keyword">return</span> m;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>所以可以知道，<code>handler.post</code>和<code>handler.sendMessage</code>本质上是没有区别的，都是发送一个消息到消息队列中，只不过post使用方式更简单。</p>
+<p>修复maven坐标非常简单，要么在<a href="https://dl.google.com/dl/android/maven2/index.html" target="_blank" rel="noopener">Google的存储库</a>中查找最新版本，要么使用<a href="https://github.com/ben-manes/gradle-versions-plugin" target="_blank" rel="noopener">gradle-versions-plugin</a>自动检测最新的工件。</p>
+<p>更艰巨的任务是确保我们实际转换了所有包名。 幸运的是，<a href="https://developer.android.com/topic/libraries/support-library/downloads/androidx-class-mapping.csv" target="_blank" rel="noopener">Google提供了一个csv文件，映射旧的包名称</a>，我们在<a href="https://gist.github.com/dlew/5db1b780896bbc6f542e7c00a11db6a0" target="_blank" rel="noopener">一个小脚本</a>中使用它来转换代码库。 这个脚本需要几分钟才能运行，但它允许我们始终将代码库转换为新的包名。</p>
+<p>不幸的是，<a href="https://youtu.be/iNlqt3pvRFg?t=17" target="_blank" rel="noopener">类映射CSV不完整</a>。例如，它缺少大多数设计库类映射（即<code>android.support.design.widget</code>中的类）。我不得不在我自己的CSV中添加几行以使其转换所有内容。</p>
+<h1 id="Jetifier限制"><a href="#Jetifier限制" class="headerlink" title="Jetifier限制"></a>Jetifier限制</h1><p><a href="https://developer.android.com/studio/command-line/jetifier" target="_blank" rel="noopener">jetifier</a> 是一个方便的工具，可以在构建时自动将依赖项迁移到AndroidX。如果没有它，在迁移之前，您需要使用每个依赖项来拥有AndroidX版本，这可能不会发生一段时间。</p>
+<p>需要注意的是一个重要的限制：<strong>jetifier仅适用于打包的工件。</strong>它不适用于您希望自己更新的源代码。</p>
+<p>不幸的是，您的应用程序可能包含既不是打包工件也不是您控制的源代码的代码：生成的代码。你既不编写也不维护它，但它被编译为好像它是你自己的源代码。</p>
+<p>如果生成的代码引用旧工件，则可能会遇到麻烦。 以<a href="https://github.com/JakeWharton/butterknife" target="_blank" rel="noopener">Butter Knife</a>为例。 它生成包含支持注释的引用的类（例如<code>android.support.annotation.UiThread</code>）。 这些导入无法满足AndroidX（因为它是源代码），所以你会得到编译器错误。</p>
+<p><strong>对于生成的代码，您必须更新您的依赖项，以便生成与AndroidX兼容的代码。</strong></p>
+<p>对于我们来说，这是一个问题，有两个代码生成器 - Butter Knife和SqlDelight。值得庆幸的是，两者都有支持AndroidX的版本（非常感谢Square制作AndroidX友好的工件）。</p>
+<h1 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h1><p>考虑到上述所有情况，您应该感到惊讶，因为我花了相当多的时间将我们的代码库升级到AndroidX。</p>
+<p>由于团队中的其他开发人员仍在不断更改代码库，所以花费的时间导致了自己的问题。 <strong>他们对修改后的import语句所做的每一次更改都会导致与我正在进行的AndroidX分支的痛苦合并冲突。</strong> 手工维护那个分支将是一个巨大的痛苦。</p>
+<p>这个问题是我编写<a href="https://gist.github.com/dlew/5db1b780896bbc6f542e7c00a11db6a0" target="_blank" rel="noopener">迁移脚本</a>的第二个原因。<strong>每当我将我的AndroidX分支重新命名为最新的master时，我只需重新运行脚本而不是尝试处理合并。</strong>我用这种方式挽救了一大堆努力。</p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>支持库工件已被弃用，所有未来的开发都将进入AndroidX，因此无法避免此迁移。但是，希望这些技巧能为您提供更清晰的过渡路径。</p>
 
       
     </div>
@@ -424,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/02/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2019/08/18/Git指南/" rel="next" title="Git指南">
+                <i class="fa fa-chevron-left"></i> Git指南
               </a>
             
           </div>
@@ -433,10 +435,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/08/Java编程思想-单例模式/" rel="prev" title="Java编程思想-单例模式">
-                Java编程思想-单例模式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -586,7 +584,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍一下Activity的几种启动模式"><span class="nav-number">1.</span> <span class="nav-text">介绍一下Activity的几种启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#standard"><span class="nav-number">1.1.</span> <span class="nav-text">standard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singleTop"><span class="nav-number">1.2.</span> <span class="nav-text">singleTop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singleTask"><span class="nav-number">1.3.</span> <span class="nav-text">singleTask</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singleInstance"><span class="nav-number">1.4.</span> <span class="nav-text">singleInstance</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#父类的静态方法能不能被子类重写"><span class="nav-number">2.</span> <span class="nav-text">父类的静态方法能不能被子类重写</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Handler的sendMessage和post的区别"><span class="nav-number">3.</span> <span class="nav-text">Handler的sendMessage和post的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#两种方式用法"><span class="nav-number">3.1.</span> <span class="nav-text">两种方式用法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#迁移准备"><span class="nav-number">1.</span> <span class="nav-text">迁移准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#迁移失败"><span class="nav-number">2.</span> <span class="nav-text">迁移失败</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Jetifier限制"><span class="nav-number">3.</span> <span class="nav-text">Jetifier限制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#合并"><span class="nav-number">4.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">5.</span> <span class="nav-text">结论</span></a></li></ol></div>
             
 
           </div>

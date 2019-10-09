@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原标题：Kotlin-ifying a Builder Pattern 副标题：How a few Kotlin wrapper methods can transform your builder pattern into a Kotlin DSL 原文作者：Doug Sigelbaum 原文地址：https://medium.com/google-developers/kotlin-ifyin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译]Kotlin中用DSL代替建造者模式">
+<meta property="og:url" content="https://wazing.github.io/2019/08/30/Kotlin中用DSL代替建造者模式/index.html">
+<meta property="og:site_name" content="Wazing blog">
+<meta property="og:description" content="原标题：Kotlin-ifying a Builder Pattern 副标题：How a few Kotlin wrapper methods can transform your builder pattern into a Kotlin DSL 原文作者：Doug Sigelbaum 原文地址：https://medium.com/google-developers/kotlin-ifyin">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-09T13:48:21.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[译]Kotlin中用DSL代替建造者模式">
+<meta name="twitter:description" content="原标题：Kotlin-ifying a Builder Pattern 副标题：How a few Kotlin wrapper methods can transform your builder pattern into a Kotlin DSL 原文作者：Doug Sigelbaum 原文地址：https://medium.com/google-developers/kotlin-ifyin">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wazing.github.io/2019/08/30/Kotlin中用DSL代替建造者模式/">
+
+
+
+
+
+  <title>[译]Kotlin中用DSL代替建造者模式 | Wazing blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wazing blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/08/30/Kotlin中用DSL代替建造者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wazing">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wazing blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[译]Kotlin中用DSL代替建造者模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-30T19:27:10+08:00">
+                2019-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/译文/" itemprop="url" rel="index">
+                    <span itemprop="name">译文</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/08/30/Kotlin中用DSL代替建造者模式/" class="leancloud_visitors" data-flag-title="[译]Kotlin中用DSL代替建造者模式">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原标题：Kotlin-ifying a Builder Pattern</p>
+<p>副标题：How a few Kotlin wrapper methods can transform your builder pattern into a Kotlin DSL</p>
+<p>原文作者：<a href="https://medium.com/@sigelbaum?source=post_page-----e5540c91bdbe" target="_blank" rel="noopener">Doug Sigelbaum</a></p>
+<p>原文地址：<a href="https://medium.com/google-developers/kotlin-ifying-a-builder-pattern-e5540c91bdbe" target="_blank" rel="noopener">https://medium.com/google-developers/kotlin-ifying-a-builder-pattern-e5540c91bdbe</a></p>
+<p>在Java语言中，当一个对象的实例化需要多个参数时，建造者模式（Builder）已被认可为非常好的实现方式之一。 正如《Effective Java》指出的，当一个构造器拥有太多的参数时，对于构造器中所需参数的修改很容易影响到实际的代码。</p>
+<p>当然，Kotlin语言中的命名参数在许多情况下解决了这个问题，因为在调用Kotlin的函数时，开发者可以指定每个参数的名称，从而减少错误的发生。 但是，由于Java并没有这样的特性，因此Builder模式仍然是有必要的。 此外，对于可选参数的动态设置，这种情况下也需要借助于Builder模式。</p>
+<a id="more"></a>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>让我们思考一下通过Java实现的一个简单的Builder模式案例。 我们首先有一个POJO Company类，它包含几个属性，也许这种情况足以使用Builder模式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Company</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String name;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">double</span> marketCap;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">double</span> annualCosts;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">double</span> annualRevenue;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> List&lt;Employee&gt; employees;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> List&lt;Office&gt; offices;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Company</span><span class="params">(Builder builder)</span> </span>&#123;</span><br><span class="line">        List&lt;Employee&gt; builtEmployees = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Employee.Builder employee : builder.employees) &#123;</span><br><span class="line">            builtEmployees.add(employee.build());</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;Office&gt; builtOffices = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Office.Builder office : builder.offices) &#123;</span><br><span class="line">            builtOffices.add(office.build());</span><br><span class="line">        &#125;</span><br><span class="line">        employees = Collections.unmodifiableList(builtEmployees);</span><br><span class="line">        offices = Collections.unmodifiableList(builtOffices);</span><br><span class="line">        name = builder.name;</span><br><span class="line">        marketCap = builder.marketCap;</span><br><span class="line">        annualCosts = builder.annualCosts;</span><br><span class="line">        annualRevenue = builder.annualRevenue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">double</span> marketCap;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">double</span> annualCosts;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">double</span> annualRevenue;</span><br><span class="line">        <span class="keyword">private</span> List&lt;Employee.Builder&gt; employees = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">private</span> List&lt;Office.Builder&gt; offices = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Company <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Company(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">addEmployee</span><span class="params">(Employee.Builder employee)</span> </span>&#123;</span><br><span class="line">            employees.add(employee);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">addOffice</span><span class="params">(Office.Builder office)</span> </span>&#123;</span><br><span class="line">            offices.add(office);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.name = name;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setMarketCap</span><span class="params">(<span class="keyword">double</span> marketCap)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.marketCap = marketCap;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setAnnualCosts</span><span class="params">(<span class="keyword">double</span> annualCosts)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.annualCosts = annualCosts;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setAnnualRevenue</span><span class="params">(<span class="keyword">double</span> annualRevenue)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.annualRevenue = annualRevenue;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此外，公司有List和List。 这些类也使用构建器模式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String firstName;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String lastName;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String id;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> isManager;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String managerId;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Employee</span><span class="params">(Builder builder)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.firstName = builder.firstName;</span><br><span class="line">        <span class="keyword">this</span>.lastName = builder.lastName;</span><br><span class="line">        <span class="keyword">this</span>.id = builder.id;</span><br><span class="line">        <span class="keyword">this</span>.isManager = builder.isManager;</span><br><span class="line">        <span class="keyword">this</span>.managerId = builder.managerId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String firstName;</span><br><span class="line">        <span class="keyword">private</span> String lastName;</span><br><span class="line">        <span class="keyword">private</span> String id;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">boolean</span> isManager;</span><br><span class="line">        <span class="keyword">private</span> String managerId;</span><br><span class="line"></span><br><span class="line">        <span class="function">Employee <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Employee(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setFirstName</span><span class="params">(String firstName)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.firstName = firstName;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setLastName</span><span class="params">(String lastName)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.lastName = lastName;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setId</span><span class="params">(String id)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.id = id;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setIsManager</span><span class="params">(<span class="keyword">boolean</span> manager)</span> </span>&#123;</span><br><span class="line">            isManager = manager;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setManagerId</span><span class="params">(String managerId)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.managerId = managerId;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>来看看Office.java：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Office</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String address;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> capacity;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> occupancy;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> sqft;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Office</span><span class="params">(Builder builder)</span> </span>&#123;</span><br><span class="line">        address = builder.address;</span><br><span class="line">        capacity = builder.capacity;</span><br><span class="line">        occupancy = builder.occupancy;</span><br><span class="line">        sqft = builder.sqft;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String address;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> capacity;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> occupancy;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> sqft;</span><br><span class="line"></span><br><span class="line">        <span class="function">Office <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Office(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setAddress</span><span class="params">(String address)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.address = address;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setCapacity</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setOccupancy</span><span class="params">(<span class="keyword">int</span> occupancy)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.occupancy = occupancy;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setSqft</span><span class="params">(<span class="keyword">int</span> sqft)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.sqft = sqft;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，如果我们想构建一个包含Employee和Office的Company，我们可以这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaClient</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Company <span class="title">buildCompany</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Company.Builder company = <span class="keyword">new</span> Company.Builder();</span><br><span class="line">        Employee.Builder employee = <span class="keyword">new</span> Employee.Builder()</span><br><span class="line">                .setFirstName(<span class="string">"Doug"</span>)</span><br><span class="line">                .setLastName(<span class="string">"Sigelbaum"</span>)</span><br><span class="line">                .setIsManager(<span class="keyword">false</span>)</span><br><span class="line">                .setManagerId(<span class="string">"XXX"</span>);</span><br><span class="line">        Office.Builder office = <span class="keyword">new</span> Office.Builder()</span><br><span class="line">                .setAddress(<span class="string">"San Francisco"</span>)</span><br><span class="line">                .setCapacity(<span class="number">2500</span>)</span><br><span class="line">                .setOccupancy(<span class="number">2400</span>);</span><br><span class="line">        company.setAnnualCosts(<span class="number">0</span>)</span><br><span class="line">                .setAnnualRevenue(<span class="number">0</span>)</span><br><span class="line">                .addEmployee(employee)</span><br><span class="line">                .addOffice(office);</span><br><span class="line">        <span class="keyword">return</span> company.build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在Kotlin中，我们会这样去实现：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KotlinClient</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">buildCompany</span><span class="params">()</span></span>: Company &#123;</span><br><span class="line">        <span class="keyword">val</span> company = Company.Builder()</span><br><span class="line">        <span class="keyword">val</span> employee = Employee.Builder()</span><br><span class="line">            .setFirstName(<span class="string">"Doug"</span>)</span><br><span class="line">            .setLastName(<span class="string">"Sigelbaum"</span>)</span><br><span class="line">            .setIsManager(<span class="literal">false</span>)</span><br><span class="line">            .setManagerId(<span class="string">"XXX"</span>)</span><br><span class="line">        <span class="keyword">val</span> office = Office.Builder()</span><br><span class="line">            .setAddress(<span class="string">"San Francisco"</span>)</span><br><span class="line">            .setCapacity(<span class="number">2500</span>)</span><br><span class="line">            .setOccupancy(<span class="number">2400</span>)</span><br><span class="line">        company.setAnnualCosts(<span class="number">0.0</span>)</span><br><span class="line">            .setAnnualRevenue(<span class="number">0.0</span>)</span><br><span class="line">            .addEmployee(employee)</span><br><span class="line">            .addOffice(office)</span><br><span class="line">        <span class="keyword">return</span> company.build()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Kotlin中实现Lambda参数的方法封装"><a href="#Kotlin中实现Lambda参数的方法封装" class="headerlink" title="Kotlin中实现Lambda参数的方法封装"></a>Kotlin中实现Lambda参数的方法封装</h1><p>在<a href="http://github.com/kotlin/dokka" target="_blank" rel="noopener">Dokka</a>，我们使用<a href="https://github.com/Kotlin/kotlinx.html" target="_blank" rel="noopener">kotlinx.html</a>，它可以通过一个漂亮的DSL来实例化HTML的对象。 在Android中，它和通过<a href="https://github.com/Kotlin/anko/wiki/Anko-Layouts" target="_blank" rel="noopener">Anko Layouts</a>构建布局类似。 正如我在上一篇文章中所讨论的，slice-builders-ktx还在Builder模式之外提供了DSL包装器。 所有这些库都使用lambda参数提供了DSL的实现方式。 Lambda参数在Kotlin和Java 8+中可用，它们的使用方式略有不同。 有很多同行朋友，特别是Android开发者，都在使用Java 7，我们只会在这篇文章中简单使用一下Kotlin lambda参数。 <strong>现在让我们尝试为Company类提供DSL的支持！</strong></p>
+<h2 id="顶层的封装（Top-Level-Wrapper）"><a href="#顶层的封装（Top-Level-Wrapper）" class="headerlink" title="顶层的封装（Top Level Wrapper）"></a>顶层的封装（Top Level Wrapper）</h2><p>这里是Kotlin中的一个顶层函数，这个函数将会为Company对象提供DSL的唯一支持：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">company</span><span class="params">(buildCompany: <span class="type">Company</span>.<span class="type">Builder</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): Company &#123;</span><br><span class="line">    <span class="keyword">val</span> builder = Company.Builder()</span><br><span class="line">    <span class="comment">// Since `buildCompany` is an extension function for Company.Builder,</span></span><br><span class="line">    <span class="comment">// buildCompany() is called on the Company.Builder object.</span></span><br><span class="line">    builder.buildCompany()</span><br><span class="line">    <span class="keyword">return</span> builder.build()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：这里我们使用了 <strong>内联函数（inline）</strong> 以避免lambda的额外开销。</p>
+<p>因为方法中的lambda参数类型为 <strong>Company.Builder.() -&gt; Unit</strong> ，因此，该lambda中所有语句都处于Company.Builder的内部。现在，通过Kotlin的语法，我们可以通过调用build（）以获得Company.Builder的实例，而不是直接实例化Builder:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KtxClient1</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">buildCompany</span><span class="params">()</span></span>: Company &#123;</span><br><span class="line">        <span class="keyword">return</span> company &#123;</span><br><span class="line">            <span class="comment">// `this` scope is the Company.Builder being built.</span></span><br><span class="line">            addEmployee(</span><br><span class="line">                Employee.Builder()</span><br><span class="line">                    .setFirstName(<span class="string">"Doug"</span>)</span><br><span class="line">                    .setLastName(<span class="string">"Sigelbaum"</span>)</span><br><span class="line">                    .setIsManager(<span class="literal">false</span>)</span><br><span class="line">                    .setManagerId(<span class="string">"XXX"</span>)</span><br><span class="line">            )</span><br><span class="line">            addOffice(</span><br><span class="line">                Office.Builder()</span><br><span class="line">                    .setAddress(<span class="string">"San Francisco"</span>)</span><br><span class="line">                    .setCapacity(<span class="number">2500</span>)</span><br><span class="line">                    .setOccupancy(<span class="number">2400</span>)</span><br><span class="line">            )</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="封装嵌套的Builder"><a href="#封装嵌套的Builder" class="headerlink" title="封装嵌套的Builder"></a>封装嵌套的Builder</h2><p>我们现在可以为Company.Builder添加更多扩展函数，以避免直接实例化或将Employee.Builders或Office.Builders添加到父Company.Builder。 这是一个潜在的解决方案：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> Company.Builder.<span class="title">employee</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    buildEmployee: <span class="type">Employee</span>.<span class="type">Builder</span>.()</span></span> -&gt; <span class="built_in">Unit</span></span><br><span class="line">) &#123;</span><br><span class="line">    <span class="keyword">val</span> builder = Employee.Builder()</span><br><span class="line">    builder.buildEmployee()</span><br><span class="line">    addEmployee(builder)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> Company.Builder.<span class="title">office</span><span class="params">(buildOffice: <span class="type">Office</span>.<span class="type">Builder</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) &#123;</span><br><span class="line">    <span class="keyword">val</span> builder = Office.Builder()</span><br><span class="line">    builder.buildOffice()</span><br><span class="line">    addOffice(builder)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这些拓展函数，在Kotlin中的使用方式等效变成了：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KtxClient2</span> </span>&#123;    </span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">buildCompany</span><span class="params">()</span></span>: Company &#123;</span><br><span class="line">        <span class="keyword">return</span> company &#123;</span><br><span class="line">            employee &#123;</span><br><span class="line">                setFirstName(<span class="string">"Doug"</span>)</span><br><span class="line">                setLastName(<span class="string">"Sigelbaum"</span>)</span><br><span class="line">                setIsManager(<span class="literal">false</span>)</span><br><span class="line">                setManagerId(<span class="string">"XXX"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            office &#123;</span><br><span class="line">                setAddress(<span class="string">"San Francisco"</span>)</span><br><span class="line">                setCapacity(<span class="number">2500</span>)</span><br><span class="line">                setOccupancy(<span class="number">2400</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>几乎大功告成了！ 我们已经完成了对Builder中API的优化，但是我们不得不面对一个新问题：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KtxBadClient</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">buildBadCompany</span><span class="params">()</span></span>: Company &#123;</span><br><span class="line">        <span class="keyword">return</span> company &#123;</span><br><span class="line">            employee &#123;</span><br><span class="line">                setFirstName(<span class="string">"Doug"</span>)</span><br><span class="line">                setLastName(<span class="string">"Sigelbaum"</span>)</span><br><span class="line">                setIsManager(<span class="literal">false</span>)</span><br><span class="line">                setManagerId(<span class="string">"XXX"</span>)</span><br><span class="line">                employee &#123;</span><br><span class="line">                    setFirstName(<span class="string">"Sean"</span>)</span><br><span class="line">                    setLastName(<span class="string">"Mcq"</span>)</span><br><span class="line">                    setIsManager(<span class="literal">false</span>)</span><br><span class="line">                    setManagerId(<span class="string">"XXX"</span>)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            office &#123;</span><br><span class="line">                setAddress(<span class="string">"San Francisco"</span>)</span><br><span class="line">                setCapacity(<span class="number">2500</span>)</span><br><span class="line">                setOccupancy(<span class="number">2400</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不幸的是，我们把一个employee的Builder嵌套进入了另外一个employee的Builder中，但是这样仍然会通过编译并运行！在Kotlin中，类的作用范围似乎发生了混乱，这意味着，company { … } 的lambda代码块中，这些嵌套的lambda代码块中都可以任意访问Employee.Builder<strong>和</strong>Company.Builder中的内容。现在，代码将两名员工（Employee）“Doug”和“Sean”添加到公司（Company），但是这两名员工实际上并没有直接的关系。</p>
+<p><strong>当作用域发生混乱时，如何修改扩展函数以避免上例所示的错误呢？</strong> 换句话说，我们该如何才能使我们的DSL类型安全？ 幸运的是，Kotlin 1.1引入了DslMarker注释类来解决这个问题。</p>
+<h2 id="使用DslMarker注解保证DSL的类型安全"><a href="#使用DslMarker注解保证DSL的类型安全" class="headerlink" title="使用DslMarker注解保证DSL的类型安全"></a>使用DslMarker注解保证DSL的类型安全</h2><p>让我们首先创建一个使用了DslMarker注解的注解类：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@DslMarker</span></span><br><span class="line"><span class="keyword">annotation</span> <span class="class"><span class="keyword">class</span> <span class="title">CompanyDsl</span></span></span><br></pre></td></tr></table></figure>
+<p>现在，如果使用<code>@CompanyDsl</code>注释了一些类，开发者将无法对多个接收器进行隐式地访问，这些接收器的类位于带注释的类集中。 相反，调用者只能使用最近的作用域隐式访问接收器。</p>
+<p>DslMarker注解类，位于Kotlin的stdlib包中，因此您需要添加其依赖。 如果没有的话，您可以尝试对构建器进行子类化，并在Kotlin封装好的函数中使用这些子类：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CompanyDsl</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CompanyBuilderDsl</span> : <span class="type">Company.Builder</span></span>()</span><br><span class="line"></span><br><span class="line"><span class="meta">@CompanyDsl</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmployeeBuilderDsl</span> : <span class="type">Employee.Builder</span></span>()</span><br><span class="line"></span><br><span class="line"><span class="meta">@CompanyDsl</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OfficeBuilderDsl</span> : <span class="type">Office.Builder</span></span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">company</span><span class="params">(buildCompany: <span class="type">CompanyBuilderDsl</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): Company &#123;</span><br><span class="line">    <span class="keyword">val</span> builder = CompanyBuilderDsl()</span><br><span class="line">    <span class="comment">// Since `buildCompany` is an extension function for Company.Builder,</span></span><br><span class="line">    <span class="comment">// buildCompany() is called on the Company.Builder object.</span></span><br><span class="line">    builder.buildCompany()</span><br><span class="line">    <span class="keyword">return</span> builder.build()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> CompanyBuilderDsl.<span class="title">employee</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    buildEmployee: <span class="type">EmployeeBuilderDsl</span>.()</span></span> -&gt; <span class="built_in">Unit</span></span><br><span class="line">) &#123;</span><br><span class="line">    <span class="keyword">val</span> builder = EmployeeBuilderDsl()</span><br><span class="line">    builder.buildEmployee()</span><br><span class="line">    addEmployee(builder)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> CompanyBuilderDsl.<span class="title">office</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    buildOffice: <span class="type">OfficeBuilderDsl</span>.()</span></span> -&gt; <span class="built_in">Unit</span></span><br><span class="line">) &#123;</span><br><span class="line">    <span class="keyword">val</span> builder = OfficeBuilderDsl()</span><br><span class="line">    builder.buildOffice()</span><br><span class="line">    addOffice(builder)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，我们重复之前错误的行为，会得到下面的提示：</p>
+<blockquote>
+<p><strong>…can’t be called in this context by implicit receiver. Use the explicit one if necessary.</strong></p>
+</blockquote>
+<p>完美，大功告成！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/24/Kotlin-Application单例化最佳实现/" rel="next" title="Kotlin Application单例化最佳实现">
+                <i class="fa fa-chevron-left"></i> Kotlin Application单例化最佳实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/03/Android-迁移到AndroidX的现实/" rel="prev" title="Android 迁移到AndroidX的现实">
+                Android 迁移到AndroidX的现实 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="http://image-manager.oss-cn-beijing.aliyuncs.com/blog/v2-1f809638ef7d31c2bf618d53c705da58_hd.jpg" alt="Wazing">
+            
+              <p class="site-author-name" itemprop="name">Wazing</p>
+              <p class="site-description motion-element" itemprop="description">Merry Christmas.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wazing" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:jokey1509@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kotlin中实现Lambda参数的方法封装"><span class="nav-number">2.</span> <span class="nav-text">Kotlin中实现Lambda参数的方法封装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#顶层的封装（Top-Level-Wrapper）"><span class="nav-number">2.1.</span> <span class="nav-text">顶层的封装（Top Level Wrapper）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装嵌套的Builder"><span class="nav-number">2.2.</span> <span class="nav-text">封装嵌套的Builder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用DslMarker注解保证DSL的类型安全"><span class="nav-number">2.3.</span> <span class="nav-text">使用DslMarker注解保证DSL的类型安全</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wazing</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("ahPzt2W1jDEs3gCvk3W6ieSR-gzGzoHsz", "GOdDJYwRiWppcwUIffjsSYgN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

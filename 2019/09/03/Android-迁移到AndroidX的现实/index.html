@@ -105,19 +105,17 @@
 
 
 
-<meta name="description" content="当我第一次学习Kotlin时，觉得val和var之间的区别似乎很简单，val表示不可变，var表示可变。 真相比这更微妙，val不代表不可变，val意味着只读。这意味着你不允许明确写入val，但它不能保证它们是不可变的。[1]">
+<meta name="description" content="原标题：The Reality of Migrating to AndroidX 原文地址：https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/ 原文作者：Dan Lew 作者推特：https://twitter.com/danlew42 今年，谷歌将Android库的支持重新命名为Android Jetp">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kotlin中的可变Vals">
-<meta property="og:url" content="https://wazing.github.io/2019/06/15/Kotlin中的可变Vals/index.html">
+<meta property="og:title" content="Android 迁移到AndroidX的现实">
+<meta property="og:url" content="https://wazing.github.io/2019/09/03/Android-迁移到AndroidX的现实/index.html">
 <meta property="og:site_name" content="Wazing blog">
-<meta property="og:description" content="当我第一次学习Kotlin时，觉得val和var之间的区别似乎很简单，val表示不可变，var表示可变。 真相比这更微妙，val不代表不可变，val意味着只读。这意味着你不允许明确写入val，但它不能保证它们是不可变的。[1]">
+<meta property="og:description" content="原标题：The Reality of Migrating to AndroidX 原文地址：https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/ 原文作者：Dan Lew 作者推特：https://twitter.com/danlew42 今年，谷歌将Android库的支持重新命名为Android Jetp">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190615.jpg">
-<meta property="og:updated_time" content="2019-06-15T09:28:40.800Z">
+<meta property="og:updated_time" content="2019-10-15T13:15:24.197Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kotlin中的可变Vals">
-<meta name="twitter:description" content="当我第一次学习Kotlin时，觉得val和var之间的区别似乎很简单，val表示不可变，var表示可变。 真相比这更微妙，val不代表不可变，val意味着只读。这意味着你不允许明确写入val，但它不能保证它们是不可变的。[1]">
-<meta name="twitter:image" content="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190615.jpg">
+<meta name="twitter:title" content="Android 迁移到AndroidX的现实">
+<meta name="twitter:description" content="原标题：The Reality of Migrating to AndroidX 原文地址：https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/ 原文作者：Dan Lew 作者推特：https://twitter.com/danlew42 今年，谷歌将Android库的支持重新命名为Android Jetp">
 
 
 
@@ -147,13 +145,13 @@
 
 
 
-  <link rel="canonical" href="https://wazing.github.io/2019/06/15/Kotlin中的可变Vals/">
+  <link rel="canonical" href="https://wazing.github.io/2019/09/03/Android-迁移到AndroidX的现实/">
 
 
 
 
 
-  <title>Kotlin中的可变Vals | Wazing blog</title>
+  <title>Android 迁移到AndroidX的现实 | Wazing blog</title>
   
 
 
@@ -270,7 +268,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/06/15/Kotlin中的可变Vals/">
+    <link itemprop="mainEntityOfPage" href="https://wazing.github.io/2019/09/03/Android-迁移到AndroidX的现实/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wazing">
@@ -287,7 +285,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kotlin中的可变Vals</h1>
+          <h1 class="post-title" itemprop="name headline">Android 迁移到AndroidX的现实</h1>
         
 
         <div class="post-meta">
@@ -299,8 +297,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-15T18:39:25+08:00">
-                2019-06-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-03T12:09:52+08:00">
+                2019-09-03
               </time>
             
 
@@ -322,8 +320,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/译文/" itemprop="url" rel="index">
-                    <span itemprop="name">译文</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -339,7 +337,7 @@
 
           
           
-             <span id="/2019/06/15/Kotlin中的可变Vals/" class="leancloud_visitors" data-flag-title="Kotlin中的可变Vals">
+             <span id="/2019/09/03/Android-迁移到AndroidX的现实/" class="leancloud_visitors" data-flag-title="Android 迁移到AndroidX的现实">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -370,42 +368,41 @@
       
 
       
-        <p><img src="https://image-manager.oss-cn-beijing.aliyuncs.com/blog/cover/190615.jpg" alt="cover.jpg"></p>
-<p>当我第一次学习Kotlin时，觉得<code>val</code>和<code>var</code>之间的区别似乎很简单，<code>val</code>表示不可变，<code>var</code>表示可变。</p>
-<p>真相比这更微妙，<strong><code>val</code>不代表不可变，<code>val</code>意味着只读</strong>。这意味着你不允许明确写入<code>val</code>，但它不能保证它们是不可变的。<a href="#mark_1">[1]</a></p>
+        <p>原标题：<strong>The Reality of Migrating to AndroidX</strong></p>
+<p>原文地址：<a href="https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/" target="_blank" rel="noopener">https://blog.danlew.net/2018/11/14/the-reality-of-migrating-to-androidx/</a></p>
+<p>原文作者：Dan Lew</p>
+<p>作者推特：<a href="https://twitter.com/danlew42" target="_blank" rel="noopener">https://twitter.com/danlew42</a></p>
+<p>今年，谷歌将Android库的支持重新命名为<a href="https://developer.android.com/jetpack/" target="_blank" rel="noopener">Android Jetpack（又称AndroidX）。</a></p>
+<p>与开发人员特别相关的是他们如何重新打包所有库。它们的 <a href="https://developer.android.com/jetpack/androidx/migrate#artifact_mappings" target="_blank" rel="noopener">maven坐标</a> 不仅发生了变化，而且<a href="https://developer.android.com/jetpack/androidx/migrate#class_mappings" target="_blank" rel="noopener">每个类的包名也发生了变化</a>。</p>
+<p>例如，<code>android.support.v7.app.AppCompatActivity</code>现在<code>androidx.appcompat.app.AppCompatActivity</code>。</p>
+<p>旧的人工产品和包装名称是混乱不清的，所以从长远来看，这是一个伟大的举动。但是，在短期内，升级需要对代码库进行大量更改。</p>
+<p>从理论上讲，这种迁移应该像在<a href="https://developer.android.com/jetpack/androidx/migrate#migrate" target="_blank" rel="noopener">Android Studio中运行“Migrate to AndroidX”</a>工具一样简单。如果这适用于您的应用程序，那太棒了！现在停止阅读这篇文章！</p>
+<p>不幸的是，我们发现它比那更麻烦。以下是我们实际完成迁移的方式。</p>
 <a id="more"></a>
-<blockquote>
-<p>原标题：Mutable vals in Kotlin</p>
-<p>原文作者：<a href="https://github.com/dlew" target="_blank" rel="noopener">Daniel Lew</a></p>
-<p>原文地址：<a href="https://blog.danlew.net/2017/05/30/mutable-vals-in-kotlin/" target="_blank" rel="noopener">https://blog.danlew.net/2017/05/30/mutable-vals-in-kotlin/</a></p>
-</blockquote>
-<h1 id="可变类属性"><a href="#可变类属性" class="headerlink" title="可变类属性"></a>可变类属性</h1><p>对于变量，不可变和只读之间的区别是一个有争议的问题。没有办法编写<code>val</code>变量或覆盖它的检索方式，因此（对于所有意图和目的）它是不可变的。</p>
-<p>但是，对于类属性，只读属性<code>val</code>会产生巨大的差异。</p>
-<p>在属性的上下文中，<code>val</code>与<code>var</code>指示属性是否存在getter/setter。<code>var</code>既有getter又有setter，而<code>val</code>只有getter。</p>
-<p>在简单的情况下，缺少setter意味着<code>val</code>类属性是不可变的。但是，可以为任何类属性添加自定义getter函数，允许您在每次有人访问该属性时返回您想要的任何内容。例如：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(<span class="keyword">val</span> birthDay: DateTime) &#123;</span><br><span class="line">  <span class="keyword">val</span> age: <span class="built_in">Int</span></span><br><span class="line">    <span class="keyword">get</span>() = yearsBetween(birthDay, DateTime.now())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如您所见，没有明确的设置方法<code>Person.age</code>，但<code>Person.age</code>会在当前日期更改时更改值。</p>
-<p>实际上，将其<code>Person.age</code>视为变量实际上是用词不当。它实际上是一个你正在调用的getter函数，它可能会改变调用值。</p>
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>当我在Kotlin学习可变vals时，我个人感到震惊。 我觉得被违背了<code>val</code>与<code>var</code>标记数据一样，不可变与可变是我学到的Kotlin的第一个很酷的功能之一！</p>
-<p>据我所知，对于<code>val</code>类属性，可定制的getter有两个参数：</p>
-<ol>
-<li>类属性只是getter / setter的简写，并且通常认为定制getter是正常的。</li>
-<li>可自定义的getter启用委派属性。</li>
-</ol>
-<p>委托属性是一个引人注目的用例，我将继续使用它们。但是，我发现在<code>val</code>暗示不可变引用时，更容易推理代码。不可变性使代码（尤其是并发代码）更容易使用。</p>
-<p>因此，我选择不为<code>val</code>类属性使用自定义getter 。如果只读类属性随时间改变值，我改为用正常函数替换该属性：</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(<span class="keyword">val</span> birthDay: DateTime) &#123;</span><br><span class="line">  <span class="function"><span class="keyword">fun</span> <span class="title">age</span><span class="params">()</span></span>: <span class="built_in">Int</span> = yearsBetween(birthDay, DateTime.now())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这种偏好是Kotlin编码惯例所建议的。 它声明只有在基础算法时才应该优先考虑函数的属性：</p>
+<h1 id="迁移准备"><a href="#迁移准备" class="headerlink" title="迁移准备"></a>迁移准备</h1><p>在开始调整迁移到AndroidX的想法之前，<strong>您应该了解所有当前支持库工件的最新版本</strong>。这样，从旧工件到新工件的跳跃应该只需要更改包名称。</p>
+<p>在大多数情况下，这意味着在支持库的v28.0.0版本上。但是，一些支持库使用其他版本控制方案：例如，我们必须将<a href="https://developer.android.com/kotlin/ktx" target="_blank" rel="noopener">Android KTX</a>升级到v0.3，将<a href="https://developer.android.com/topic/libraries/architecture/room" target="_blank" rel="noopener">Room持久性库</a>升级到v1.1.1。</p>
+<p>提前做好此准备工作非常适合揭示需要较旧版本支持库且必须更新的代码库部分。</p>
+<p>例如，我们发现SqlDelight需要旧版本的Room持久性库。最后，我们要求（并收到）一个版本的SqlDelight，通过支持最新的持久性库（转发，Square！）使转换变得更容易。</p>
+<h1 id="迁移失败"><a href="#迁移失败" class="headerlink" title="迁移失败"></a>迁移失败</h1><p>一旦您的依赖关系连续出现，下一步就是尝<strong>试Android Studio</strong>的“迁移到AndroidX”工具。<strong>不幸的是，它以多种方式失败了我们的代码库：</strong></p>
 <ul>
-<li>不用throw</li>
-<li>有复杂性</li>
-<li>计算起来很低廉（或在第一次运行时计算）</li>
-<li>通过调用返回相同的结果</li>
+<li>AndroidX工件的maven坐标通常是过时的（指的是alpha版本而不是最新的稳定版本）。</li>
+<li>它实际上并没有找到/替换所有需要更新的包引用。</li>
+<li>它对我们的代码库进行了无关的更改，它应该只触及import语句，但它也不必要地修改了其他引用。</li>
 </ul>
-<p>覆盖getter并更改参考值会违反最后一个条件，因此请避免这样做！</p>
-<hr>
-<p></p><p id="mark_1"><br>[1]: 为了简洁起见，在这篇文章中，“不可变”实际上意味着“不可变参考”。 您始终可以引用可变对象（如ArrayList）。 在这种情况下防止可变性需要比简单使用val更先进的技术，我不会在这里讨论。</p>
-<p></p>
+<p>修复maven坐标非常简单，要么在<a href="https://dl.google.com/dl/android/maven2/index.html" target="_blank" rel="noopener">Google的存储库</a>中查找最新版本，要么使用<a href="https://github.com/ben-manes/gradle-versions-plugin" target="_blank" rel="noopener">gradle-versions-plugin</a>自动检测最新的工件。</p>
+<p>更艰巨的任务是确保我们实际转换了所有包名。 幸运的是，<a href="https://developer.android.com/topic/libraries/support-library/downloads/androidx-class-mapping.csv" target="_blank" rel="noopener">Google提供了一个csv文件，映射旧的包名称</a>，我们在<a href="https://gist.github.com/dlew/5db1b780896bbc6f542e7c00a11db6a0" target="_blank" rel="noopener">一个小脚本</a>中使用它来转换代码库。 这个脚本需要几分钟才能运行，但它允许我们始终将代码库转换为新的包名。</p>
+<p>不幸的是，<a href="https://youtu.be/iNlqt3pvRFg?t=17" target="_blank" rel="noopener">类映射CSV不完整</a>。例如，它缺少大多数设计库类映射（即<code>android.support.design.widget</code>中的类）。我不得不在我自己的CSV中添加几行以使其转换所有内容。</p>
+<h1 id="Jetifier限制"><a href="#Jetifier限制" class="headerlink" title="Jetifier限制"></a>Jetifier限制</h1><p><a href="https://developer.android.com/studio/command-line/jetifier" target="_blank" rel="noopener">jetifier</a> 是一个方便的工具，可以在构建时自动将依赖项迁移到AndroidX。如果没有它，在迁移之前，您需要使用每个依赖项来拥有AndroidX版本，这可能不会发生一段时间。</p>
+<p>需要注意的是一个重要的限制：<strong>jetifier仅适用于打包的工件。</strong>它不适用于您希望自己更新的源代码。</p>
+<p>不幸的是，您的应用程序可能包含既不是打包工件也不是您控制的源代码的代码：生成的代码。你既不编写也不维护它，但它被编译为好像它是你自己的源代码。</p>
+<p>如果生成的代码引用旧工件，则可能会遇到麻烦。 以<a href="https://github.com/JakeWharton/butterknife" target="_blank" rel="noopener">Butter Knife</a>为例。 它生成包含支持注释的引用的类（例如<code>android.support.annotation.UiThread</code>）。 这些导入无法满足AndroidX（因为它是源代码），所以你会得到编译器错误。</p>
+<p><strong>对于生成的代码，您必须更新您的依赖项，以便生成与AndroidX兼容的代码。</strong></p>
+<p>对于我们来说，这是一个问题，有两个代码生成器 - Butter Knife和SqlDelight。值得庆幸的是，两者都有支持AndroidX的版本（非常感谢Square制作AndroidX友好的工件）。</p>
+<h1 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h1><p>考虑到上述所有情况，您应该感到惊讶，因为我花了相当多的时间将我们的代码库升级到AndroidX。</p>
+<p>由于团队中的其他开发人员仍在不断更改代码库，所以花费的时间导致了自己的问题。 <strong>他们对修改后的import语句所做的每一次更改都会导致与我正在进行的AndroidX分支的痛苦合并冲突。</strong> 手工维护那个分支将是一个巨大的痛苦。</p>
+<p>这个问题是我编写<a href="https://gist.github.com/dlew/5db1b780896bbc6f542e7c00a11db6a0" target="_blank" rel="noopener">迁移脚本</a>的第二个原因。<strong>每当我将我的AndroidX分支重新命名为最新的master时，我只需重新运行脚本而不是尝试处理合并。</strong>我用这种方式挽救了一大堆努力。</p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>支持库工件已被弃用，所有未来的开发都将进入AndroidX，因此无法避免此迁移。但是，希望这些技巧能为您提供更清晰的过渡路径。</p>
+
       
     </div>
     
@@ -429,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/10/简介Kotlin-let-apply-with-rum等几种常用的拓展函数/" rel="next" title="简介Kotlin let,run,also,apply,with等几种常用的拓展函数">
-                <i class="fa fa-chevron-left"></i> 简介Kotlin let,run,also,apply,with等几种常用的拓展函数
+              <a href="/2019/08/30/Kotlin中用DSL代替建造者模式/" rel="next" title="[译]Kotlin中用DSL代替建造者模式">
+                <i class="fa fa-chevron-left"></i> [译]Kotlin中用DSL代替建造者模式
               </a>
             
           </div>
@@ -439,8 +436,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/08/Android Jetpack入门/" rel="prev" title="Android Jetpack入门">
-                Android Jetpack入门 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/09/14/git-commitEmoji表情符/" rel="prev" title="git commitEmoji表情符">
+                git commitEmoji表情符 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -591,7 +588,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#可变类属性"><span class="nav-number">1.</span> <span class="nav-text">可变类属性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">2.</span> <span class="nav-text">结论</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#迁移准备"><span class="nav-number">1.</span> <span class="nav-text">迁移准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#迁移失败"><span class="nav-number">2.</span> <span class="nav-text">迁移失败</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Jetifier限制"><span class="nav-number">3.</span> <span class="nav-text">Jetifier限制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#合并"><span class="nav-number">4.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">5.</span> <span class="nav-text">结论</span></a></li></ol></div>
             
 
           </div>
